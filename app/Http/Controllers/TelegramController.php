@@ -2,16 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Bots\Main;
 use App\Http\Controllers\Controller;
 use App\Scenarios\MainBot\Start;
-use App\Bots\Main;
 
 class TelegramController extends Controller
 {
     // Логика основного бота
     public function mybot()
     {
-        Start::handler(Main::class);
+        Start::handler(new Main);
     }
 
 }

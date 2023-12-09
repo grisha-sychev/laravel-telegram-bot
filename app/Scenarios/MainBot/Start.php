@@ -6,8 +6,8 @@ class Start
 {
     public static function handler($bot)
     {
-        $bot->command("start", function () {
-            $this->sendSelf("Hello World");
+        $bot->command("start", function () use ($bot) {
+            $bot->sendSelf("Hello World");
         });
     }
 }
