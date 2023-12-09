@@ -1,6 +1,6 @@
 <?php
 
-namespace Reijo\Telebot\Providers;
+namespace Reijo\Telebot;
 
 use Illuminate\Support\ServiceProvider;
 
