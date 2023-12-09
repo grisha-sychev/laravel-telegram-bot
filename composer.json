@@ -1,7 +1,7 @@
 {
     "name": "reijo/telebot",
     "description": "Telergam bot SDK package for laravel",
-    "type": "project",
+    "type": "library",
     "license": "MIT",
     "require": {},
     "autoload": {
@@ -15,20 +15,5 @@
                 "Reijo\\Telebot\\TelegramProvider"
             ]
         }
-    },
-    "scripts": {
-        "post-install-cmd": [
-            "php artisan clear-compiled",
-            "php artisan optimize"
-        ],
-        "post-update-cmd": [
-            "php artisan clear-compiled",
-            "php artisan optimize"
-        ]
-    },
-    "config": {
-        "optimize-autoloader": true,
-        "preferred-install": "dist",
-        "sort-packages": true
     }
 }
