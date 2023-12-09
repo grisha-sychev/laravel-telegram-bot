@@ -12,7 +12,7 @@
     "extra": {
         "laravel": {
             "providers": [
-                "Reijo\\Telebot\\ServiceProvider"
+                "Reijo\\Telebot\\TelegramProvider"
             ]
         }
     },
