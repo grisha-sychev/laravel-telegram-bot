@@ -12,7 +12,7 @@
     "extra": {
         "laravel": {
             "providers": [
-                "App\\Providers\\RouteTelegramProvider"
+                "App\\Providers\\TelegramProvider"
             ]
         }
     }
