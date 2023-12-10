@@ -34,7 +34,7 @@ class Series
      * Конструктор класса
      *
      * @param string $name Имя цикла
-     * @param \Bot\Telegram\ApiMod $bot Экземпляр бота
+     * @param \Reijo\Telebot\ApiMod $bot Экземпляр бота
      */
     public function __construct($name = '', $bot)
     {
