@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Route;
 /**
  * @package App\Providers
  */
-class RouteTelegramProvider extends ServiceProvider
+class TelegramProvider extends ServiceProvider
 {
     /**
      * The path to your application's "home" route.
