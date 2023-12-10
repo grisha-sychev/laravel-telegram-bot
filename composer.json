@@ -8,12 +8,5 @@
         "psr-4": {
             "Reijo\\Telebot\\": "src/"
         }
-    },
-    "extra": {
-        "laravel": {
-            "providers": [
-                "App\\Providers\\TelegramProvider"
-            ]
-        }
     }
 }
