@@ -8,5 +8,12 @@
         "psr-4": {
             "Reijo\\Telebot\\": "src/"
         }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Reijo\\Telebot\\Providers\\TelegramProvider"
+            ]
+        }
     }
 }
