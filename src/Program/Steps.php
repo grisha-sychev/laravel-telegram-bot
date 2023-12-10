@@ -8,7 +8,7 @@ use App\Models\User;
 /**
  * Класс цикла задач
  */
-class Series
+class Steps
 {
     /**
      * Имя цикла
