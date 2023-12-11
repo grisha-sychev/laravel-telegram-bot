@@ -2,8 +2,8 @@
 
 namespace Reijo\Telebot\Api\Trait;
 
-use Reijo\Telebot\Api\Data\MessageQuery;
-use Reijo\Telebot\Api\Data\CallbackQuery;
+use Reijo\Telebot\Data\MessageQuery;
+use Reijo\Telebot\Data\CallbackQuery;
 
 /**
  * Trait User

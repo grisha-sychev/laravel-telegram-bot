@@ -75,24 +75,28 @@ class Steps
      */
     public function round($count, $callback, $miss = false)
     {
+
         if($this->name === $this->getCurrentStep()) {
 
+            $data = new \stdClass;
             $this->miss === true && $miss = true;
             $callback = $callback->bindTo($this, $this);
             $api = $this->bot;
-            $message = $api->getMessageText() ?: null;
+            // TODO: на любую информацию вместо getMessageText
+            $data->message =  $api->getMessageText() ?: null;
+            // $data->callback = $api->getCallbackData() ?: null;
 
             if ($this->getStep() === null) {
                 $this->step(1);
                 if ($this->getStep() === $count) {
-                    if ($callback($message) !== false) {
+                    if ($callback($data) !== false) {
                         $this->step($this->getStep() + 1);
                         $miss ?: die;
                     }
                 }
             } else {
                 if ($this->getStep() === $count) {
-                    if ($callback($message) !== false) {
+                    if ($callback($data) !== false) {
                         $this->step($this->getStep() + 1);
                         $miss ?: die;
                     }

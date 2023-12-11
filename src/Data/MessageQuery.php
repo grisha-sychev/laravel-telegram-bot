@@ -1,6 +1,6 @@
 <?php
 
-namespace Reijo\Telebot\Api\Data;
+namespace Reijo\Telebot\Data;
 
 class MessageQuery
 {
