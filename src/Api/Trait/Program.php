@@ -2,8 +2,8 @@
 
 namespace Reijo\Telebot\Api\Trait;
 
-use Reijo\Telebot\Api\Data\CallbackQuery;
-use Reijo\Telebot\Api\Data\MessageQuery;
+use Reijo\Telebot\Data\CallbackQuery;
+use Reijo\Telebot\Data\MessageQuery;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Request;
 
