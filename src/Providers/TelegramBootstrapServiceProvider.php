@@ -8,17 +8,8 @@ use Illuminate\Support\Facades\Route;
 /**
  * @package App\Providers
  */
-class TelegramProvider extends ServiceProvider
+class TelegramBootstrapServiceProvider extends ServiceProvider
 {
-    /**
-     * The path to your application's "home" route.
-     *
-     * Typically, users are redirected here after authentication.
-     *
-     * @var string
-     */
-    public const HOME = '/home';
-
     /**
      * Bootstrap services.
      *
@@ -32,10 +23,5 @@ class TelegramProvider extends ServiceProvider
             __DIR__ . '/../../database' => database_path(),
             __DIR__ . '/../../routes' => base_path('routes'),
         ], "reijo-telebot");
-        
-        $this->routes(function () {
-            Route::middleware('web')->withoutMiddleware(['web', 'App\Http\Middleware\VerifyCsrfToken'])
-                ->group(base_path('routes/telegram.php'));
-        });
     }
 }

@@ -160,7 +160,7 @@ class Telegram
 
     }
 
-    public function errorSimple($message, $response = nu)
+    public function errorSimple($message, $response = null)
     {
         $this->error($message, $response, function () use ($response) {
             $this->sendSelf('Данного варианта нет', $response);

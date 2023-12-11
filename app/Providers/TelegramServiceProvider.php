@@ -8,17 +8,8 @@ use Illuminate\Support\Facades\Route;
 /**
  * @package App\Providers
  */
-class TelegramProvider extends ServiceProvider
+class TelegramServiceProvider extends ServiceProvider
 {
-    /**
-     * The path to your application's "home" route.
-     *
-     * Typically, users are redirected here after authentication.
-     *
-     * @var string
-     */
-    public const HOME = '/home';
-
     /**
      * Bootstrap services.
      *

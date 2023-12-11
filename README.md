@@ -11,7 +11,17 @@ add info db
 ```
 composer require reijo/telebot
 ```
+add in app config provaider 
 
+```
+'providers' => ServiceProvider::defaultProviders()->merge([
+    /*
+     * Package Service Providers...
+     */
+    App\Providers\TelegramServiceProvider::class,
+])->toArray(),
+```
+    
 ```
 php artisan vendor:publish --tag=reijo-telebot
 ```

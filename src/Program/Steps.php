@@ -8,7 +8,7 @@ use App\Models\User;
 /**
  * Класс цикла задач
  */
-class Series
+class Steps
 {
     /**
      * Имя цикла
@@ -73,7 +73,6 @@ class Series
             $callback = $callback->bindTo($this, $this);
             $api = $this->bot;
             $message = $api->getMessageText() ?: null;
-            $count === 1 && $this->step(1);
 
             if ($this->getStep() === null) {
                 $this->step(1);
