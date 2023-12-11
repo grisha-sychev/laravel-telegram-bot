@@ -13,7 +13,7 @@ composer require reijo/telebot
 ```
 add in app config provaider 
 
-```
+```php
 'providers' => ServiceProvider::defaultProviders()->merge([
     /*
      * Package Service Providers...
