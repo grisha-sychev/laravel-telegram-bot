@@ -1,19 +1,13 @@
 # telebot
 Telergam bot SDK package for laravel
 
-```
-composer create-project laravel/laravel example-app
-```
-```
-cd example-app
-```
 add info db 
 ```
 composer require reijo/telebot
 ```
 add in app config provaider 
 
-```
+```php
 'providers' => ServiceProvider::defaultProviders()->merge([
     /*
      * Package Service Providers...
