@@ -1,6 +1,6 @@
 <?php
 
-namespace Reijo\Telebot\Program;
+namespace Reijo\Telebot\Helpers;
 
 use App\Models\Step;
 use App\Models\User;
