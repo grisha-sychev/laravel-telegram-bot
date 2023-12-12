@@ -45,12 +45,12 @@ class Steps
     /**
      * Метод для работы с шагами цикла
      *
-     * @param string $body Текст шага (необязательный)
+     * @param int $body Текст шага (необязательный)
      * @return int|null Числовое значение текущего шага (если $body не передан), иначе устанавливает новый шаг
      */
-    public function step($body = '')
+    public function step($body = 0)
     {
-        if ($body === '') {
+        if ($body === 0) {
             return $this->getStep();
         } else {
             $this->setStep($this->name, $body);
@@ -73,7 +73,7 @@ class Steps
      * @param bool $miss Флаг, указывающий на необходимость пропуска цикла
      * @return $this
      */
-    public function round($count, $callback, $miss = false)
+    public function round($count, $callback, $miss = false, $nonstep = false)
     {
 
         if($this->name === $this->getCurrentStep()) {
@@ -90,14 +90,14 @@ class Steps
                 $this->step(1);
                 if ($this->getStep() === $count) {
                     if ($callback($data) !== false) {
-                        $this->step($this->getStep() + 1);
+                        $nonstep ?: $this->step($this->getStep() + 1);
                         $miss ?: die;
                     }
                 }
             } else {
                 if ($this->getStep() === $count) {
                     if ($callback($data) !== false) {
-                        $this->step($this->getStep() + 1);
+                        $nonstep ?: $this->step($this->getStep() + 1);
                         $miss ?: die;
                     }
                 }
