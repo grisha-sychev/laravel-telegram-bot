@@ -68,36 +68,40 @@ class Steps
     /**
      * Метод для выполнения действий в цикле
      *
-     * @param int $count Количество шагов, на котором выполнится действие
+     * @param int|array $count Количество шагов, на котором выполнится действие
      * @param callable $callback Функция, выполняемая на каждом шаге
      * @param bool $miss Флаг, указывающий на необходимость пропуска цикла
      * @return $this
      */
-    public function round($count, $callback, $miss = false, $nonstep = false)
+    public function round($count, $callback, $miss = false, $skipstep = false)
     {
+        if (is_array($count)) {
+            $count = $count[0];
+            $skipstep = $count[1];
+        }
 
-        if($this->name === $this->getCurrentStep()) {
+        if ($this->name === $this->getCurrentStep()) {
 
             $data = new \stdClass;
             $this->miss === true && $miss = true;
             $callback = $callback->bindTo($this, $this);
             $api = $this->bot;
             // TODO: на любую информацию вместо getMessageText
-            $data->message =  $api->getMessageText() ?: null;
+            $data->message = $api->getMessageText() ?: null;
             // $data->callback = $api->getCallbackData() ?: null;
 
             if ($this->getStep() === null) {
                 $this->step(1);
                 if ($this->getStep() === $count) {
                     if ($callback($data) !== false) {
-                        $nonstep ?: $this->step($this->getStep() + 1);
+                        $skipstep ?: $this->step($this->getStep() + 1);
                         $miss ?: die;
                     }
                 }
             } else {
                 if ($this->getStep() === $count) {
                     if ($callback($data) !== false) {
-                        $nonstep ?: $this->step($this->getStep() + 1);
+                        $skipstep ?: $this->step($this->getStep() + 1);
                         $miss ?: die;
                     }
                 }
