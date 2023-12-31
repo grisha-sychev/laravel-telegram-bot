@@ -68,18 +68,13 @@ class Steps
     /**
      * Метод для выполнения действий в цикле
      *
-     * @param int|array $count Количество шагов, на котором выполнится действие
+     * @param int $count Количество шагов, на котором выполнится действие
      * @param callable $callback Функция, выполняемая на каждом шаге
      * @param bool $miss Флаг, указывающий на необходимость пропуска цикла
      * @return $this
      */
     public function round($count, $callback, $miss = false, $skipstep = false)
     {
-        if (is_array($count)) {
-            $count = $count[0];
-            $skipstep = $count[1];
-        }
-
         if ($this->name === $this->getCurrentStep()) {
 
             $data = new \stdClass;
