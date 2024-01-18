@@ -24,11 +24,18 @@ class Steps
      */
     private $bot;
     /**
-     * Экземпляр бота
+     * Пропуск
      *
      * @var mixed
      */
-    private $miss = false;
+    private $missclick = false;
+
+    /**
+     * Сборщик раундов
+     *
+     * @var mixed
+     */
+    private $rounds = [];
 
     /**
      * Конструктор класса
@@ -70,16 +77,15 @@ class Steps
      *
      * @param int $count Количество шагов, на котором выполнится действие
      * @param callable $callback Функция, выполняемая на каждом шаге
-     * @param bool $miss Флаг, указывающий на необходимость пропуска цикла
+     * @param bool $missclick Флаг, указывающий на необходимость пропуска цикла
      * @return $this
      */
-    public function round($count, $callback, $miss = false, $skipstep = false)
+    public function round($count, $callback, $missclick = false, $skipstep = false)
     {
         if ($this->name === $this->getCurrentStep()) {
 
             $data = new \stdClass;
-            $this->miss === true && $miss = true;
-            $callback = $callback->bindTo($this, $this);
+            $this->missclick === true && $missclick = true;
             $api = $this->bot;
             // TODO: на любую информацию вместо getMessageText
             $data->message = $api->getMessageText() ?: null;
@@ -88,22 +94,37 @@ class Steps
             if ($this->getStep() === null) {
                 $this->step(1);
                 if ($this->getStep() === $count) {
-                    if ($callback($data) !== false) {
+                    if ($this->rounds[$count] = $callback($data) !== false) {
                         $skipstep ?: $this->step($this->getStep() + 1);
-                        $miss ?: die;
+                        $missclick ?: exit;
                     }
                 }
             } else {
                 if ($this->getStep() === $count) {
                     if ($callback($data) !== false) {
                         $skipstep ?: $this->step($this->getStep() + 1);
-                        $miss ?: die;
+                        $missclick ?: exit;
                     }
                 }
             }
         }
 
         return $this;
+    }
+
+    /**
+     * Метод для получения уже существующего раунда
+     *
+     * @param int $count Ключ шага
+     */
+    public function executeRound($count)
+    {
+        $this->stage($count);
+
+        if (isset($this->rounds[$count]) && is_callable($this->rounds[$count])) {
+            $callback = $this->rounds[$count];
+            $callback();
+        }
     }
 
     /**
@@ -119,18 +140,19 @@ class Steps
         return $step ? $step->body : null;
     }
 
+    /**
+     * Метод устанавливающий число текущего шага
+     *
+     * @param int $int Номер шага
+     */
     public function stage($int)
     {
         $this->step($int);
-        $this->refresh();
-        die;
     }
 
     public function miss()
     {
-        $this->miss = true;
-        $this->refresh();
-        return $this;
+        $this->missclick = true;
     }
 
 
@@ -146,11 +168,6 @@ class Steps
         $user->save();
     }
 
-    public function refresh()
-    {
-        header('Location: ' . $_SERVER['REQUEST_URI']);
-        return $this;
-    }
     /**
      * Метод для установки значения шага
      *

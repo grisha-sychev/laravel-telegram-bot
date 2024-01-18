@@ -160,15 +160,6 @@ class Telegram
 
     }
 
-    public function errorSimple($message, $response = null)
-    {
-        $this->error($message, $response, function () use ($response) {
-            $this->sendSelf('Данного варианта нет', $response);
-            die;
-        });
-    }
-
-
     private function findMatch($data, $array)
     {
         foreach ($array as $value) {
@@ -205,4 +196,5 @@ class Telegram
             return $this->lastword($this->getMessageText());
         }
     }
+
 }
