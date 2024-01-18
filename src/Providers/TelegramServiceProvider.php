@@ -18,7 +18,13 @@ class TelegramServiceProvider extends ServiceProvider
     public function boot()
     {
         $filePath = base_path('routes/telegram.php');
-        file_put_contents($filePath, "");
+        file_put_contents($filePath, 
+"<?php\n
+
+use Illuminate\Support\Facades\Route;\n
+
+Route::post('/bot/main', [App\Http\Controllers\TelegramController::class, 'mybot']);\n"
+);
 
         $this->routes(function () {
             Route::middleware('web')->withoutMiddleware(['web', 'App\Http\Middleware\VerifyCsrfToken'])
