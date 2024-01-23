@@ -156,10 +156,17 @@ trait User
      */
     public function getCallbackData()
     {
-        return (object) [
-            'callback_query_id' => $this->getUser()->getCallbackQueryId(),
-            'callback_data' => $this->getUser()->getCallbackData(),
-        ];
+
+        $user = $this->getUser();
+
+        if ($user && method_exists($user, 'getCallbackQueryId') && method_exists($user, 'getCallbackData')) {
+            return (object) [
+                'callback_query_id' => $user->getCallbackQueryId(),
+                'callback_data' => $user->getCallbackData(),
+            ];
+        }
+        
+        return null;
     }
 
     /**

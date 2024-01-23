@@ -100,21 +100,34 @@ class Telegram
     /**
      * Определяет callback для бота и выполняет соответствующий обработчик, если команда совпадает с текстом сообщения.
      *
-     * @param string $command Команда, начинающаяся с символа "/" (например, "/start").
-     * @param Closure $callback Функция-обработчик для выполнения, если команда совпадает.
+     * @param string   $pattern  Это строка по которой будет искать какой callback выполнить, например hello{id} или greet{name} и так далее
+     * @param Closure $callback Функция-обработчик для выполнения, если команда совпадает с паттереном.
      *
      * @return mixed Результат выполнения функции-обработчика.
      */
-    public function callback($data, $callback)
+    public function callback($pattern, $callback)
     {
-        $this->callback = $this->getCallbackData()->callback_data;
-        $this->answerCallbackQuery($this->getCallbackData()->callback_query_id);
-        $callback = $callback->bindTo($this, $this);
+        $cb = $this->getCallbackData();
 
-        if ($this->callback === $data) {
-            return $callback();
+        // Добавляем проверку на существование и тип переменной $cb
+        if ($cb && is_object($cb)) {
+            $cb = $cb->callback_data;
+            $this->answerCallbackQuery($cb->callback_query_id);
+
+            // Преобразуем паттерн с параметрами в регулярное выражение
+            $pattern = str_replace(['{', '}'], ['(?P<', '>[^}]+)'], $pattern);
+            $pattern = "/^" . str_replace('/', '\/', $pattern) . "$/";
+
+            if (preg_match($pattern, $cb, $matches)) {
+                // Извлекаем только значения параметров из совпавших данных и передаем их в функцию-обработчик
+                $parameters = array_filter($matches, 'is_string', ARRAY_FILTER_USE_KEY);
+                return $callback(...$parameters);
+            }
         }
+
+        return null;
     }
+
 
     /**
      * Определяет сообщение для бота и выполняет соответствующий обработчик, если команда совпадает с текстом сообщения.

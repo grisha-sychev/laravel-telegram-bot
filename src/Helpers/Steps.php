@@ -31,13 +31,6 @@ class Steps
     private $missclick = false;
 
     /**
-     * Сборщик раундов
-     *
-     * @var mixed
-     */
-    private $rounds = [];
-
-    /**
      * Конструктор класса
      *
      * @param string $name Имя цикла
@@ -94,7 +87,7 @@ class Steps
             if ($this->getStep() === null) {
                 $this->step(1);
                 if ($this->getStep() === $count) {
-                    if ($this->rounds[$count] = $callback($data) !== false) {
+                    if ($callback($data) !== false) {
                         $skipstep ?: $this->step($this->getStep() + 1);
                         $missclick ?: exit;
                     }
@@ -110,21 +103,6 @@ class Steps
         }
 
         return $this;
-    }
-
-    /**
-     * Метод для получения уже существующего раунда
-     *
-     * @param int $count Ключ шага
-     */
-    public function executeRound($count)
-    {
-        $this->stage($count);
-
-        if (isset($this->rounds[$count]) && is_callable($this->rounds[$count])) {
-            $callback = $this->rounds[$count];
-            $callback();
-        }
     }
 
     /**

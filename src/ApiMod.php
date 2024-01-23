@@ -55,7 +55,7 @@ class ApiMod extends Telegram
      * @param string $message Текст сообщения.
      * @param array|null $keyboard Клавиатура для сообщения (необязательно).
      * @param int $grid Деление сообщений на столбцы.
-     * @param int $type_keyboard Тип каливатуры 1 - keyboard 2 - inlineKeyboard
+     * @param int $type_keyboard Тип каливатуры 0 - keyboard 1 - inlineKeyboard
      * @param string|null $parse_mode Включение HTML мода, по умолчанию включен (необязательно).
      *
      */
