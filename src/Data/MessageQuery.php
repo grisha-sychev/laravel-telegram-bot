@@ -29,18 +29,18 @@ class MessageQuery
 
     public function __construct(array $data)
     {
-        $this->data = $data;
-        $this->updateId = $data['update_id'];
-        $this->messageId = $data['message']['message_id'];
-        $this->fromId = $data['message']['from']['id'];
-        $this->fromIsBot = $data['message']['from']['is_bot'];
-        $this->fromFirstName = $data['message']['from']['first_name'];
-        $this->fromUsername = $data['message']['from']['username'];
-        $this->chatId = $data['message']['chat']['id'];
-        $this->chatFirstName = $data['message']['chat']['first_name'];
-        $this->chatUsername = $data['message']['chat']['username'];
-        $this->chatType = $data['message']['chat']['type'];
-        $this->messageDate = $data['message']['date'];
+        $this->data = $data ?? null;
+        $this->updateId = $data['update_id'] ?? null;
+        $this->messageId = $data['message']['message_id'] ?? null;
+        $this->fromId = $data['message']['from']['id'] ?? null;
+        $this->fromIsBot = $data['message']['from']['is_bot'] ?? null;
+        $this->fromFirstName = $data['message']['from']['first_name'] ?? null;
+        $this->fromUsername = $data['message']['from']['username'] ?? null;
+        $this->chatId = $data['message']['chat']['id'] ?? null;
+        $this->chatFirstName = $data['message']['chat']['first_name'] ?? null;
+        $this->chatUsername = $data['message']['chat']['username'] ?? null;
+        $this->chatType = $data['message']['chat']['type'] ?? null;
+        $this->messageDate = $data['message']['date'] ?? null;
         $this->messageText = $data['message']['text'] ?? null;
         $this->video = $data['message']['video'] ?? null;
         $this->audio = $data['message']['audio'] ?? null;
