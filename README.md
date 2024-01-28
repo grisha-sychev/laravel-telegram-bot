@@ -27,6 +27,3 @@ php artisan migrate
 ```
 php artisan t:set-webhook
 ```
-```
-php artisan storage:link
-```

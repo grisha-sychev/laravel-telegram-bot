@@ -112,7 +112,6 @@ class Telegram
         // Добавляем проверку на существование и тип переменной $cb
         if ($cb && is_object($cb)) {
             $cb = $cb->callback_data;
-            $this->answerCallbackQuery($cb->callback_query_id);
 
             // Преобразуем паттерн с параметрами в регулярное выражение
             $pattern = str_replace(['{', '}'], ['(?P<', '>[^}]+)'], $pattern);
@@ -121,6 +120,10 @@ class Telegram
             if (preg_match($pattern, $cb, $matches)) {
                 // Извлекаем только значения параметров из совпавших данных и передаем их в функцию-обработчик
                 $parameters = array_filter($matches, 'is_string', ARRAY_FILTER_USE_KEY);
+
+                // Вызываем answerCallbackQuery только если паттерн совпадает
+                $this->answerCallbackQuery($cb->callback_query_id);
+
                 return $callback(...$parameters);
             }
         }
