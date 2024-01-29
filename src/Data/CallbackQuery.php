@@ -28,32 +28,33 @@ class CallbackQuery
 
     public function __construct(array $data)
     {
-        $this->data = $data ?? '';
-        $this->updateId = $data['update_id'] ?? '';
-        $this->callbackQueryId = $data['callback_query']['id'] ?? '';
-        $this->fromId = $data['callback_query']['from']['id'] ?? '';
-        $this->fromIsBot = $data['callback_query']['from']['is_bot'] ?? '';
-        $this->fromFirstName = $data['callback_query']['from']['first_name'] ?? '';
-        $this->fromUsername = $data['callback_query']['from']['username'] ?? '';
-        $this->messageId = $data['callback_query']['message']['message_id'] ?? '';
-        $this->messageFromId = $data['callback_query']['message']['from']['id'] ?? '';
-        $this->messageIsBot = $data['callback_query']['message']['from']['is_bot'] ?? '';
-        $this->messageFirstName = $data['callback_query']['message']['from']['first_name'] ?? '';
-        $this->messageUsername = $data['callback_query']['message']['from']['username'] ?? '';
-        $this->chatId = $data['callback_query']['message']['chat']['id'] ?? '';
-        $this->chatFirstName = $data['callback_query']['message']['chat']['first_name'] ?? '';
-        $this->chatUsername = $data['callback_query']['message']['chat']['username'] ?? '';
-        $this->chatType = $data['callback_query']['message']['chat']['type'] ?? '';
-        $this->messageDate = $data['callback_query']['message']['date'] ?? '';
-        $this->messageText = $data['callback_query']['message']['text'] ?? '';
-        $this->inlineKeyboard = $data['callback_query']['message']['reply_markup']['inline_keyboard'] ?? '';
-        $this->chatInstance = $data['callback_query']['chat_instance'] ?? '';
-        $this->callbackData = $data['callback_query']['data'] ?? '';
+        $this->data = $data;
+        $this->updateId = $data['update_id'];
+        $this->callbackQueryId = $data['callback_query']['id'];
+        $this->fromId = $data['callback_query']['from']['id'];
+        $this->fromIsBot = $data['callback_query']['from']['is_bot'];
+        $this->fromFirstName = $data['callback_query']['from']['first_name'];
+        $this->fromUsername = $data['callback_query']['from']['username'];
+        $this->messageId = $data['callback_query']['message']['message_id'];
+        $this->messageFromId = $data['callback_query']['message']['from']['id'];
+        $this->messageIsBot = $data['callback_query']['message']['from']['is_bot'];
+        $this->messageFirstName = $data['callback_query']['message']['from']['first_name'];
+        $this->messageUsername = $data['callback_query']['message']['from']['username'];
+        $this->chatId = $data['callback_query']['message']['chat']['id'];
+        $this->chatFirstName = $data['callback_query']['message']['chat']['first_name'];
+        $this->chatUsername = $data['callback_query']['message']['chat']['username'];
+        $this->chatType = $data['callback_query']['message']['chat']['type'];
+        $this->messageDate = $data['callback_query']['message']['date'];
+        $this->messageText = $data['callback_query']['message']['text'];
+        $this->inlineKeyboard = $data['callback_query']['message']['reply_markup']['inline_keyboard'];
+        $this->chatInstance = $data['callback_query']['chat_instance'];
+        $this->callbackData = $data['callback_query']['data'];
     }
 
     public function getAll()
     {
-        return $this->data;
+        $this->data;
+        return $this;
     }
 
     public function getUpdateId()

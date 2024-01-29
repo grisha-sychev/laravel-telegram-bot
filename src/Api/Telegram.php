@@ -111,13 +111,11 @@ class Telegram
 
         // Добавляем проверку на существование и тип переменной $cb
         if ($cb && is_object($cb)) {
-            $cb = $cb->callback_data;
-
             // Преобразуем паттерн с параметрами в регулярное выражение
             $pattern = str_replace(['{', '}'], ['(?P<', '>[^}]+)'], $pattern);
             $pattern = "/^" . str_replace('/', '\/', $pattern) . "$/";
 
-            if (preg_match($pattern, $cb, $matches)) {
+            if (preg_match($pattern, $cb->callback_data, $matches)) {
                 // Извлекаем только значения параметров из совпавших данных и передаем их в функцию-обработчик
                 $parameters = array_filter($matches, 'is_string', ARRAY_FILTER_USE_KEY);
 
