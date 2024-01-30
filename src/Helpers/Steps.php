@@ -92,9 +92,6 @@ class Steps
             if ($this->getStep() === null) {
                 $this->step(1);
                 if ($this->getStep() === $count) {
-                    if (substr($data->message, 0, 1) === "/") {
-                        return $this;
-                    }
                     if ($callback($data) !== false) {
                         $skipstep ?: $this->step($this->getStep() + 1);
                         $missclick ?: exit;
@@ -102,11 +99,6 @@ class Steps
                 }
             } else {
                 if ($this->getStep() === $count) {
-
-                    if (substr($data->message, 0, 1) === "/") {
-                        return $this;
-                    }
-
                     if ($callback($data) !== false) {
                         $skipstep ?: $this->step($this->getStep() + 1);
                         $missclick ?: exit;
@@ -129,6 +121,14 @@ class Steps
         $key = $this->bot->getUserId() . '_' . $this->name;
         $step = Step::where('key_id', $key)->first();
         return $step ? $step->body : null;
+    }
+
+
+    public function ignoreCommand($data)
+    {
+        if (substr($data->message, 0, 1) === "/") {
+            exit;
+        }
     }
 
     /**
