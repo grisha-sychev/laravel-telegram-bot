@@ -90,22 +90,23 @@ class Steps
             $data->message = $api->getMessageText() ?: null;
 
             if ($this->getStep() === null) {
-
-                if (substr($data->message, 0, 1) === "/") {
-                    return $this;
-                }
-
                 $this->step(1);
-
                 if ($this->getStep() === $count) {
+                    if (substr($data->message, 0, 1) === "/") {
+                        return $this;
+                    }
                     if ($callback($data) !== false) {
                         $skipstep ?: $this->step($this->getStep() + 1);
                         $missclick ?: exit;
                     }
                 }
             } else {
-
                 if ($this->getStep() === $count) {
+
+                    if (substr($data->message, 0, 1) === "/") {
+                        return $this;
+                    }
+
                     if ($callback($data) !== false) {
                         $skipstep ?: $this->step($this->getStep() + 1);
                         $missclick ?: exit;
