@@ -124,14 +124,14 @@ trait User
     public function getMedia()
     {
         return (object) [
-            'photo' => $this->getUser()->getPhoto(),
-            'video' => $this->getUser()->getVideo(),
-            'audio' => $this->getUser()->getAudio(),
-            'sticker' => $this->getUser()->getSticker(),
-            'contact' => $this->getUser()->getContact(),
-            'location' => $this->getUser()->getLocation(),
-            'voice' => $this->getUser()->getVoice(),
-            'document' => $this->getUser()->getDocument(),
+            'photo' => $this->getUser()->getPhoto() ?? null,
+            'video' => $this->getUser()->getVideo() ?? null,
+            'audio' => $this->getUser()->getAudio() ?? null,
+            'sticker' => $this->getUser()->getSticker() ?? null,
+            'contact' => $this->getUser()->getContact() ?? null,
+            'location' => $this->getUser()->getLocation() ?? null,
+            'voice' => $this->getUser()->getVoice() ?? null,
+            'document' => $this->getUser()->getDocument() ?? null,
         ];
     }
 

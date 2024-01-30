@@ -87,17 +87,14 @@ class Steps
             $skipstep = in_array('skipstep', $param) ? true : false;
 
             $api = $this->bot;
-            // TODO: на любую информацию вместо getMessageText
             $data->message = $api->getMessageText() ?: null;
-            // $data->callback = $api->getCallbackData() ?: null;
 
-            if (in_array('ignoreCommand', $param)) {
-                if (substr($data->message, 0, 1) === "/") {
-                    exit;
-                }
-            }
-            
             if ($this->getStep() === null) {
+
+                if (substr($data->message, 0, 1) === "/") {
+                    return $this;
+                }
+
                 $this->step(1);
 
                 if ($this->getStep() === $count) {
@@ -107,6 +104,7 @@ class Steps
                     }
                 }
             } else {
+
                 if ($this->getStep() === $count) {
                     if ($callback($data) !== false) {
                         $skipstep ?: $this->step($this->getStep() + 1);
