@@ -134,12 +134,11 @@ class ApiMod extends Telegram
      */
     public function ignoreMedia($callback)
     {
-        $media = $this->getMedia();
-
         if (
+            method_exists($this, 'getMedia') &&
             in_array(true, array_map(function ($value) {
                 return !is_null($value);
-            }, (array) $media), true)
+            }, (array) $this->getMedia()), true)
         ) {
             $callback();
             exit;

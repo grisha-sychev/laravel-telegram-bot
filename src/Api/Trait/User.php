@@ -123,16 +123,31 @@ trait User
      */
     public function getMedia()
     {
-        return (object) [
-            'photo' => $this->getUser()->getPhoto() ?? null,
-            'video' => $this->getUser()->getVideo() ?? null,
-            'audio' => $this->getUser()->getAudio() ?? null,
-            'sticker' => $this->getUser()->getSticker() ?? null,
-            'contact' => $this->getUser()->getContact() ?? null,
-            'location' => $this->getUser()->getLocation() ?? null,
-            'voice' => $this->getUser()->getVoice() ?? null,
-            'document' => $this->getUser()->getDocument() ?? null,
-        ];
+        $user = $this->getUser();
+
+        if (
+            method_exists($user, 'getPhoto') &&
+            method_exists($user, 'getVideo') &&
+            method_exists($user, 'getAudio') &&
+            method_exists($user, 'getSticker') &&
+            method_exists($user, 'getContact') &&
+            method_exists($user, 'getLocation') &&
+            method_exists($user, 'getVoice') &&
+            method_exists($user, 'getDocument')
+        ) {
+            return (object) [
+                'photo' => $user->getPhoto(),
+                'video' => $user->getVideo(),
+                'audio' => $user->getAudio(),
+                'sticker' => $user->getSticker(),
+                'contact' => $user->getContact(),
+                'location' => $user->getLocation(),
+                'voice' => $user->getVoice(),
+                'document' => $user->getDocument(),
+            ];
+        }
+
+        return null;
     }
 
     /**

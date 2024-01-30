@@ -30,33 +30,27 @@ class MessageQuery
     public function __construct(array $data)
     {
         $this->data = $data;
-
-        $this->updateId = $data['update_id'] && $data['update_id'];
-
-        if (isset($data['message'])) {
-            $message = $data['message'];
-
-            $this->messageId = $message['message_id'];
-            $this->fromId = $message['from']['id'];
-            $this->fromIsBot = $message['from']['is_bot'];
-            $this->fromFirstName = $message['from']['first_name'];
-            $this->fromUsername = $message['from']['username'];
-            $this->chatId = $message['chat']['id'];
-            $this->chatFirstName = $message['chat']['first_name'];
-            $this->chatUsername = $message['chat']['username'];
-            $this->chatType = $message['chat']['type'];
-            $this->messageDate = $message['date'];
-            $this->messageText = $message['text'];
-            $this->video = $message['video'] ?? null;
-            $this->audio = $message['audio'] ?? null;
-            $this->photo = $message['photo'] ?? null;
-            $this->sticker = $message['sticker'] ?? null;
-            $this->contact = $message['contact'] ?? null;
-            $this->location = $message['location'] ?? null;
-            $this->voice = $message['voice'] ?? null;
-            $this->document = $message['document'] ?? null;
-            $this->date = $message['date'] ?? null;
-        }
+        $this->updateId = $data['update_id'];
+        $this->messageId = $data['message']['message_id'];
+        $this->fromId = $data['message']['from']['id'];
+        $this->fromIsBot = $data['message']['from']['is_bot'];
+        $this->fromFirstName = $data['message']['from']['first_name'];
+        $this->fromUsername = $data['message']['from']['username'];
+        $this->chatId = $data['message']['chat']['id'];
+        $this->chatFirstName = $data['message']['chat']['first_name'];
+        $this->chatUsername = $data['message']['chat']['username'];
+        $this->chatType = $data['message']['chat']['type'];
+        $this->messageDate = $data['message']['date'];
+        $this->messageText = $data['message']['text'] ?? null;
+        $this->video = $data['message']['video'] ?? null;
+        $this->audio = $data['message']['audio'] ?? null;
+        $this->photo = $data['message']['photo'] ?? null;
+        $this->sticker = $data['message']['sticker'] ?? null;
+        $this->contact = $data['message']['contact'] ?? null;
+        $this->location = $data['message']['location'] ?? null;
+        $this->voice = $data['message']['voice'] ?? null;
+        $this->document = $data['message']['document'] ?? null;
+        $this->date = $data['message']['date'] ?? null;
     }
     public function getAll()
     {
