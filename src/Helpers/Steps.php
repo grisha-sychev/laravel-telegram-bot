@@ -83,7 +83,7 @@ class Steps
         if ($this->name === $this->getCurrentStep()) {
 
             $data = new \stdClass;
-            $missclick = in_array('missclick', $param) ? true : false;
+            $missclick = in_array('missclick', $param) ? true : $this->missclick;
             $skipstep = in_array('skipstep', $param) ? true : false;
 
             $api = $this->bot;
