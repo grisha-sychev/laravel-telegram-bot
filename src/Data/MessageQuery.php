@@ -35,10 +35,10 @@ class MessageQuery
         $this->fromId = $data['message']['from']['id'];
         $this->fromIsBot = $data['message']['from']['is_bot'];
         $this->fromFirstName = $data['message']['from']['first_name'];
-        $this->fromUsername = $data['message']['from']['username'];
+        $this->fromUsername = $data['message']['from']['username'] ?? null;
         $this->chatId = $data['message']['chat']['id'];
         $this->chatFirstName = $data['message']['chat']['first_name'];
-        $this->chatUsername = $data['message']['chat']['username'];
+        $this->chatUsername = $data['message']['chat']['username'] ?? null;
         $this->chatType = $data['message']['chat']['type'];
         $this->messageDate = $data['message']['date'];
         $this->messageText = $data['message']['text'] ?? null;
