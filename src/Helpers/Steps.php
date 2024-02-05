@@ -70,19 +70,24 @@ class Steps
      *
      * @param int $count Количество шагов, на котором выполнится действие
      * @param callable $callback Функция, выполняемая на каждом шаге
-     * @param bool $missclick Флаг, указывающий на необходимость пропуска цикла
+     * @param array $param Колекция флагов:
+     *      `missclick` Флаг, указывающий на необходимость пропуска цикла,
+     *      `skipstep` Флаг, указывающий на необходиомсть не менять шаг,
+     *      `ignoreCommand` Флаг, указывающий на необходиомсть игноировать команды,
+     * 
+     * 
      * @return $this
      */
-    public function round($count, $callback, $missclick = false, $skipstep = false)
+    public function round($count, $callback, $param = [])
     {
         if ($this->name === $this->getCurrentStep()) {
 
             $data = new \stdClass;
-            $this->missclick === true && $missclick = true;
+            $missclick = in_array('missclick', $param) ? true : $this->missclick;
+            $skipstep = in_array('skipstep', $param) ? true : false;
+
             $api = $this->bot;
-            // TODO: на любую информацию вместо getMessageText
             $data->message = $api->getMessageText() ?: null;
-            // $data->callback = $api->getCallbackData() ?: null;
 
             if ($this->getStep() === null) {
                 $this->step(1);
@@ -116,6 +121,14 @@ class Steps
         $key = $this->bot->getUserId() . '_' . $this->name;
         $step = Step::where('key_id', $key)->first();
         return $step ? $step->body : null;
+    }
+
+
+    public function ignoreCommand($data)
+    {
+        if (substr($data->message, 0, 1) === "/") {
+            exit;
+        }
     }
 
     /**

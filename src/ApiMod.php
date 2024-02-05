@@ -126,4 +126,25 @@ class ApiMod extends Telegram
         return implode("\n", $data);
     }
 
+    /**
+     * Метод для блокировки медиа
+     *
+     * @param callback $callback
+     * 
+     */
+    public function ignoreMedia($callback)
+    {
+        if($this->getMessageText()) {
+            if (
+                method_exists($this, 'getMedia') &&
+                in_array(true, array_map(function ($value) {
+                    return !is_null($value);
+                }, (array) $this->getMedia()), true)
+            ) {
+                $callback();
+                exit;
+            }
+        }
+    }
+
 }

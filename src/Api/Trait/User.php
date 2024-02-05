@@ -81,9 +81,18 @@ trait User
      */
     public function getUserAvatarFileId()
     {
-        $avatar = json_decode($this->getUserProfilePhotos($this->getUserId()), true);
-        return $avatar['result']['photos'][0][1]['file_id'];
+        $userProfilePhotos = json_decode($this->getUserProfilePhotos($this->getUserId()), true);
+
+        // Проверяем наличие фото
+        if (isset($userProfilePhotos['result']['photos']) && !empty($userProfilePhotos['result']['photos'])) {
+            // Получаем file_id первой фотографии
+            return $userProfilePhotos['result']['photos'][0][0]['file_id'];
+        } else {
+            // Возвращаем null или другое значение, если фото отсутствует
+            return null;
+        }
     }
+
 
 
     /**
@@ -123,16 +132,31 @@ trait User
      */
     public function getMedia()
     {
-        return (object) [
-            'photo' => $this->getUser()->getPhoto(),
-            'video' => $this->getUser()->getVideo(),
-            'audio' => $this->getUser()->getAudio(),
-            'sticker' => $this->getUser()->getSticker(),
-            'contact' => $this->getUser()->getContact(),
-            'location' => $this->getUser()->getLocation(),
-            'voice' => $this->getUser()->getVoice(),
-            'document' => $this->getUser()->getDocument(),
-        ];
+        $user = $this->getUser();
+
+        if (
+            method_exists($user, 'getPhoto') &&
+            method_exists($user, 'getVideo') &&
+            method_exists($user, 'getAudio') &&
+            method_exists($user, 'getSticker') &&
+            method_exists($user, 'getContact') &&
+            method_exists($user, 'getLocation') &&
+            method_exists($user, 'getVoice') &&
+            method_exists($user, 'getDocument')
+        ) {
+            return (object) [
+                'photo' => $user->getPhoto(),
+                'video' => $user->getVideo(),
+                'audio' => $user->getAudio(),
+                'sticker' => $user->getSticker(),
+                'contact' => $user->getContact(),
+                'location' => $user->getLocation(),
+                'voice' => $user->getVoice(),
+                'document' => $user->getDocument(),
+            ];
+        }
+
+        return null;
     }
 
     /**

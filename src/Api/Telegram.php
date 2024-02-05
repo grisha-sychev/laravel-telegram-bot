@@ -42,11 +42,24 @@ class Telegram
     /**
      * Получает ссылку на аватраку пользователя
      */
-    public function getUserAvatarUrl()
-    {
-        $photo = json_decode($this->getFile($this->getUserAvatarFileId()), true);
-        return $this->file($photo["result"]["file_path"]);
+public function getUserAvatarUrl()
+{
+    $userAvatarFileId = $this->getUserAvatarFileId();
+
+    // Проверяем наличие file_id
+    if ($userAvatarFileId) {
+        $photo = json_decode($this->getFile($userAvatarFileId), true);
+
+        // Проверяем наличие информации о файле
+        if (isset($photo['result']['file_path'])) {
+            return $this->file($photo['result']['file_path']);
+        }
     }
+
+    // Возвращаем null или другое значение, если информация о файле отсутствует
+    return null;
+}
+
 
     /**
      * Отправляет сообщение с инлайн-клавиатурой.
