@@ -42,23 +42,23 @@ class Telegram
     /**
      * Получает ссылку на аватраку пользователя
      */
-public function getUserAvatarUrl()
-{
-    $userAvatarFileId = $this->getUserAvatarFileId();
+    public function getUserAvatarUrl()
+    {
+        $userAvatarFileId = $this->getUserAvatarFileId();
 
-    // Проверяем наличие file_id
-    if ($userAvatarFileId) {
-        $photo = json_decode($this->getFile($userAvatarFileId), true);
+        // Проверяем наличие file_id
+        if ($userAvatarFileId) {
+            $photo = json_decode($this->getFile($userAvatarFileId), true);
 
-        // Проверяем наличие информации о файле
-        if (isset($photo['result']['file_path'])) {
-            return $this->file($photo['result']['file_path']);
+            // Проверяем наличие информации о файле
+            if (isset($photo['result']['file_path'])) {
+                return $this->file($photo['result']['file_path']);
+            }
         }
-    }
 
-    // Возвращаем null или другое значение, если информация о файле отсутствует
-    return null;
-}
+        // Возвращаем null или другое значение, если информация о файле отсутствует
+        return null;
+    }
 
 
     /**
@@ -115,10 +115,11 @@ public function getUserAvatarUrl()
      *
      * @param string   $pattern  Это строка по которой будет искать какой callback выполнить, например hello{id} или greet{name} и так далее
      * @param Closure $callback Функция-обработчик для выполнения, если команда совпадает с паттереном.
-     *
+     * @param bool $deleteInlineButtons Удалять ли кнопки прошлого сообщения
+     * 
      * @return mixed Результат выполнения функции-обработчика.
      */
-    public function callback($pattern, $callback)
+    public function callback($pattern, $callback, $deleteInlineButtons = false)
     {
         $cb = $this->getCallbackData();
 
@@ -135,8 +136,13 @@ public function getUserAvatarUrl()
                 // Вызываем answerCallbackQuery только если паттерн совпадает
                 $this->answerCallbackQuery($cb->callback_query_id);
 
+                if($deleteInlineButtons) {
+                    $this->editMessage($this->getUserId(), $this->getMessageId(), $this->getMessageText());
+                }
+
                 return $callback(...$parameters);
             }
+
         }
 
         return null;

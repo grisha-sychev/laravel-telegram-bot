@@ -91,6 +91,32 @@ trait MethodQuery
     }
 
     /**
+     * Редактирует сообщение из чата.
+     *
+     * @param int $chat_id Идентификатор чата.
+     * @param int $message_id Идентификатор сообщения.
+     *
+     */
+
+    public function editMessage($chat_id, $message_id, $text, $reply_markup = null, $parse_mode = null, $reply_to_message_id = null, $disable_notification = false, $disable_web_page_preview = false)
+    {
+        return $this->method('editMessageText', [
+            "chat_id" => $chat_id,
+            "message_id" => $message_id,
+            "text" => $text,
+            "reply_markup" => $reply_markup,
+            "parse_mode" => $parse_mode,
+            "reply_to_message_id" => $reply_to_message_id,
+            "disable_notification" => $disable_notification,
+            "disable_web_page_preview" => $disable_web_page_preview
+        ]);
+    }
+
+
+
+    
+
+    /**
      * Отправляет видео в чат.
      *
      * @param int $chat_id Идентификатор чата.
@@ -311,27 +337,5 @@ trait MethodQuery
     {
         return $this->method('deleteMessage', ["chat_id" => $chat_id, "message_id" => $message_id]);
     }
-
-
-    // /**
-    //  * Редактирует сообщение из чата.
-    //  *
-    //  * @param int $chat_id Идентификатор чата.
-    //  * @param int $message_id Идентификатор сообщения.
-    //  *
-    //  */
-    // public function editMessage($chat_id, $message_id, $text)
-    // {
-
-    //     return $this->method('editMessage', [
-    //         "chat_id" => $chat_id,
-    //         "text" => $text,
-    //         "reply_markup" => $reply_markup,
-    //         "parse_mode" => $parse_mode,
-    //         "reply_to_message_id" => $reply_to_message_id,
-    //         "disable_notification" => $disable_notification,
-    //         "disable_web_page_preview" => $disable_web_page_preview
-    //     ]);
-    // }
 
 }

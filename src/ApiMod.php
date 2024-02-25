@@ -33,7 +33,6 @@ class ApiMod extends Telegram
         return $this->sendMessage($this->getUserId(), $message, $keyboard ? $this->$type($keygrid) : $keyboard, $parse_mode);
     }
 
-
     /**
      * Метод отправки сообщения текущему пользователю использует inlineKeyboard
      *
@@ -46,6 +45,42 @@ class ApiMod extends Telegram
     public function sendSelfInline($message, $keyboard = null, $grid = 2, $parse_mode = "HTML")
     {
         return $this->sendSelf($message, $keyboard, $grid, 1, $parse_mode);
+    }
+
+
+    /**
+     * Метод редактирования сообщения текущему пользователю
+     *
+     * @param string $message_id id сообщения
+     * @param string|array $message Текст сообщения.
+     * @param array|null $keyboard Клавиатура для сообщения (необязательно).
+     * @param int $grid Деление сообщений на столбцы.
+     * @param int $type_keyboard Тип каливатуры 1 - keyboard 2 - inlineKeyboard
+     * @param string|null $parse_mode Включение HTML мода, по умолчанию включен (необязательно).
+     * 
+     */
+    public function editSelf($message_id, $message, $keyboard = null, $grid = 2, $type_keyboard = 0, $parse_mode = "HTML")
+    {
+        is_array($message) ? $message = $this->html($message) : $message;
+        $keyboard ? $keygrid = $this->grid($keyboard, $grid) : $keyboard;
+        $type_keyboard === 1 ? $type = "inlineKeyboard" : $type = "keyboard";
+        return $this->editMessage($this->getUserId(), $message_id, $message, $keyboard ? $this->$type($keygrid) : $keyboard, $parse_mode);
+    }
+
+    /**
+     * Метод редактирования сообщения текущему пользователю использует inlineKeyboard
+     *
+     * @param string $message_id id сообщения
+     * @param string|array $message Текст сообщения.
+     * @param array|null $keyboard Клавиатура для сообщения (необязательно).
+     * @param int $grid Деление сообщений на столбцы.
+     * @param string|null $parse_mode Включение HTML мода, по умолчанию включен (необязательно).
+     * 
+     */
+
+    public function editSelfInline($message, $message_id, $keyboard = null, $grid = 2, $parse_mode = "HTML")
+    {
+        return $this->editSelf($message, $message_id, $keyboard, $grid, 1, $parse_mode);
     }
 
     /**
@@ -134,7 +169,7 @@ class ApiMod extends Telegram
      */
     public function ignoreMedia($callback)
     {
-        if($this->getMessageText()) {
+        if ($this->getMessageText()) {
             if (
                 method_exists($this, 'getMedia') &&
                 in_array(true, array_map(function ($value) {
