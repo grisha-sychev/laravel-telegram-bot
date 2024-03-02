@@ -49,10 +49,22 @@ class ApiMod extends Telegram
 
 
     /**
+     * Метод удаления сообщений в чате
+     *
+     * @param string|array $message_id ID сообщения.
+     * 
+     */
+    public function deleteSelfMessage($message_id)
+    {
+        return $this->deleteMessage($this->getUserId(), $message_id);
+    }
+
+
+    /**
      * Метод редактирования сообщения текущему пользователю
      *
-     * @param string $message_id id сообщения
      * @param string|array $message Текст сообщения.
+     * @param string $message_id id сообщения
      * @param array|null $keyboard Клавиатура для сообщения (необязательно).
      * @param int $grid Деление сообщений на столбцы.
      * @param int $type_keyboard Тип каливатуры 1 - keyboard 2 - inlineKeyboard
@@ -78,9 +90,9 @@ class ApiMod extends Telegram
      * 
      */
 
-    public function editSelfInline($message, $message_id, $keyboard = null, $grid = 2, $parse_mode = "HTML")
+    public function editSelfInline($message_id, $message, $keyboard = null, $grid = 2, $parse_mode = "HTML")
     {
-        return $this->editSelf($message, $message_id, $keyboard, $grid, 1, $parse_mode);
+        return $this->editSelf($message_id, $message, $keyboard, $grid, 1, $parse_mode);
     }
 
     /**
