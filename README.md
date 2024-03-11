@@ -12,7 +12,7 @@ add in app config provaider
     /*
      * Package Service Providers...
      */
-    App\Providers\TelegramServiceProvider::class,
+    Reijo\Telebot\Providers\TelegramServiceProvider::class,
     Reijo\Telebot\Providers\TelegramBootstrapServiceProvider::class,
 ])->toArray(),
 ```
