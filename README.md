@@ -4,6 +4,7 @@ Telergam Bot SDK пакет для Laravel
 ## 📕 Документация
 - [Базовая логика](https://github.com/grisha-sychev/telebot/blob/main/basic-logic.md)
 - [Система шагов](https://github.com/grisha-sychev/telebot/blob/main/basic-logic.md)
+- [Все про внутреннюю логику](https://github.com/grisha-sychev/telebot/blob/main/basic-logic.md)
 - [Все про ApiMod](https://github.com/grisha-sychev/telebot/blob/main/basic-logic.md)
 - [Про систему папок](https://github.com/grisha-sychev/telebot/blob/main/basic-logic.md)
 
@@ -49,7 +50,7 @@ php artisan t:set-webhook
 ```
 
 - Теперь вы можете в вашем боте вызвать команду `start` и получить ответ `Hello Word`
-- Вся логика основного бота находиться в разделе `app/Scenarios/MainBot/Start.php`
-- Внутрення логика бота находиться в разделе `app/Bots/Main.php`
+- Вся логика основного бота находиться в разделе `app/Scenarios/MainBot/Start.php` [Базовая логика](https://github.com/grisha-sychev/telebot/blob/main/basic-logic.md)
+- Внутрення логика бота находиться в разделе `app/Bots/Main.php` [Все про внутреннюю логику](https://github.com/grisha-sychev/telebot/blob/main/basic-logic.md)
 
 
