@@ -1,7 +1,14 @@
 # Telebot Laravel - Api Telegram Bot
 Telergam Bot SDK пакет для Laravel
 
-- Прежде чем установить, подключите приложение к базе данных
+## Документация
+- [Базовая логика](https://github.com/grisha-sychev/telebot/blob/main/basic-logic.md)
+- [Система шагов](https://github.com/grisha-sychev/telebot/blob/main/basic-logic.md)
+- [Все про ApiMod](https://github.com/grisha-sychev/telebot/blob/main/basic-logic.md)
+- [Про систему папок](https://github.com/grisha-sychev/telebot/blob/main/basic-logic.md)
+
+## Установка
+### Прежде чем установить, подключите приложение к `базе данных`
 ```
 composer require reijo/telebot
 ```
