@@ -1,5 +1,7 @@
 # Telebot Laravel - Api Telegram Bot
-Telergam Bot SDK пакет для Laravel
+
+![Packagist Version](https://img.shields.io/packagist/v/reijo/telebot)
+### Telergam Bot SDK пакет для Laravel
 
 ## 📕 Документация
 - [Базовая логика](https://github.com/grisha-sychev/telebot/blob/main/basic-logic.md)
