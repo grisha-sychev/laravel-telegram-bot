@@ -32,6 +32,10 @@ composer require reijo/telebot
 ```
 php artisan vendor:publish --tag=reijo-telebot
 ```
+Теперь можете выполнить миграцию
+```
+php artisan migrate
+```
 В конфигурации `telegram.php` добавьте `token` и адрес сайта, `/bot/main` являеться дефолтным адресом основного бота, рекомендуем основного бота оставить по этому адресу
 
 ```php
@@ -43,10 +47,6 @@ return [
         ]
     ],
 ];
-```
-Теперь можете выполнить миграцию
-```
-php artisan migrate
 ```
 Зарегестрируйте webhook
 ```
