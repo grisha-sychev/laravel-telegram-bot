@@ -113,8 +113,8 @@ class Telegram
     /**
      * Определяет callback для бота и выполняет соответствующий обработчик, если команда совпадает с текстом сообщения.
      *
-     * @param string   $pattern  Это строка по которой будет искать какой callback выполнить, например hello{id} или greet{name} и так далее
-     * @param Closure $callback Функция-обработчик для выполнения, если команда совпадает с паттереном.
+     * @param string|array $pattern  Это строка или массив строк, по которым будет искать какой callback выполнить, например hello{id} или greet{name}.
+     * @param Closure $callback Функция-обработчик для выполнения, если команда совпадает с паттерном.
      * @param bool $deleteInlineButtons Удалять ли кнопки прошлого сообщения
      * 
      * @return mixed Результат выполнения функции-обработчика.
@@ -125,24 +125,29 @@ class Telegram
 
         // Добавляем проверку на существование и тип переменной $cb
         if ($cb && is_object($cb)) {
-            // Преобразуем паттерн с параметрами в регулярное выражение
-            $pattern = str_replace(['{', '}'], ['(?P<', '>[^}]+)'], $pattern);
-            $pattern = "/^" . str_replace('/', '\/', $pattern) . "$/";
+            // Приводим паттерн к массиву, если это строка
+            $patterns = is_array($pattern) ? $pattern : [$pattern];
 
-            if (preg_match($pattern, $cb->callback_data, $matches)) {
-                // Извлекаем только значения параметров из совпавших данных и передаем их в функцию-обработчик
-                $parameters = array_filter($matches, 'is_string', ARRAY_FILTER_USE_KEY);
+            // Пробегаемся по каждому паттерну
+            foreach ($patterns as $singlePattern) {
+                // Преобразуем паттерн с параметрами в регулярное выражение
+                $singlePattern = str_replace(['{', '}'], ['(?P<', '>[^}]+)'], $singlePattern);
+                $singlePattern = "/^" . str_replace('/', '\/', $singlePattern) . "$/";
 
-                // Вызываем answerCallbackQuery только если паттерн совпадает
-                $this->answerCallbackQuery($cb->callback_query_id);
+                if (preg_match($singlePattern, $cb->callback_data, $matches)) {
+                    // Извлекаем только значения параметров из совпавших данных и передаем их в функцию-обработчик
+                    $parameters = array_filter($matches, 'is_string', ARRAY_FILTER_USE_KEY);
 
-                if($deleteInlineButtons) {
-                    $this->editMessage($this->getUserId(), $this->getMessageId(), $this->getMessageText());
+                    // Вызываем answerCallbackQuery только если паттерн совпадает
+                    $this->answerCallbackQuery($cb->callback_query_id);
+
+                    if ($deleteInlineButtons) {
+                        $this->editMessage($this->getUserId(), $this->getMessageId(), $this->getMessageText());
+                    }
+
+                    return $callback(...$parameters);
                 }
-
-                return $callback(...$parameters);
             }
-
         }
 
         return null;
