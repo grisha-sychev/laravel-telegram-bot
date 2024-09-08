@@ -92,22 +92,47 @@ class Telegram
     }
 
     /**
-     * Определяет команду для бота и выполняет соответствующий обработчик, если команда совпадает с текстом сообщения.
+     * Определяет команду для бота и выполняет соответствующий обработчик, если команда совпадает с текстом сообщения или callback.
      *
-     * @param string $command Команда, начинающаяся с символа "/" (например, "/start").
-     * @param Closure $callback Функция-обработчик для выполнения, если команда совпадает.
+     * @param string|array $command Команда, начинающаяся с символа "/" (например, "/start") или массив команд.
+     * @param Closure $callback Функция-обработчик для выполнения, если команда или callback совпадают.
      *
      * @return mixed Результат выполнения функции-обработчика.
      */
     public function command($command, $callback)
     {
-        $this->command = "/" . $command;
+        // Приводим команду к массиву, если это строка
+        $commands = is_array($command) ? $command : [$command];
 
+        // Преобразуем команды, добавляя "/" к каждой, если необходимо
+        $commands = array_map(function ($cmd) {
+            return "/" . ltrim($cmd, '/');
+        }, $commands);
+
+        // Привязываем callback к текущему объекту
         $callback = $callback->bindTo($this, $this);
 
-        if ($this->command === $this->firstword($this->getMessageText())) {
-            return $callback();
+        // Получаем текст сообщения и данные callback
+        $messageText = $this->getMessageText();
+        $cb = $this->getCallbackData();
+
+        // Проверка для текста сообщения
+        foreach ($commands as $cmd) {
+            if ($cmd === $this->firstword($messageText)) {
+                return $callback();
+            }
         }
+
+        // Проверка для callback данных
+        if ($cb && is_object($cb)) {
+            foreach ($commands as $cmd) {
+                if ($cmd === "/" . $cb->callback_data) { // сравниваем с callback_data
+                    return $callback();
+                }
+            }
+        }
+
+        return null;
     }
 
     /**
