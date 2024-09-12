@@ -180,22 +180,36 @@ class Telegram
 
 
     /**
-     * Определяет сообщение для бота и выполняет соответствующий обработчик, если команда совпадает с текстом сообщения.
+     * Определяет сообщение для бота и выполняет соответствующий обработчик, если сообщение совпадает с паттерном.
      *
-     * @param string $message Любое сообщение кроме команды.
-     * @param Closure $callback Функция-обработчик для выполнения, если команда совпадает.
+     * @param string|array $pattern Это строка или массив строк, по которым будет искать, что сообщение соответствует паттерну.
+     * @param Closure $callback Функция-обработчик для выполнения, если сообщение совпадает с паттерном.
      *
      * @return mixed Результат выполнения функции-обработчика.
      */
-    public function message($message, $callback)
+    public function message($pattern, $callback)
     {
-        $callback = $callback->bindTo($this, $this);
-        $this->message = $message;
-        if (mb_substr($message, 0, 1) !== "/") {
-            if ($message === $this->getMessageText()) {
-                return $callback();
+        $messageText = $this->getMessageText();
+
+        // Приводим паттерн к массиву, если это строка
+        $patterns = is_array($pattern) ? $pattern : [$pattern];
+
+        // Пробегаемся по каждому паттерну
+        foreach ($patterns as $singlePattern) {
+            // Преобразуем паттерн с параметрами в регулярное выражение
+            $singlePattern = str_replace(['{', '}'], ['(?P<', '>[^}]+)'], $singlePattern);
+            $singlePattern = "/^" . str_replace('/', '\/', $singlePattern) . "$/";
+
+            if (preg_match($singlePattern, $messageText, $matches)) {
+                // Извлекаем только значения параметров из совпавших данных и передаем их в функцию-обработчик
+                $parameters = array_filter($matches, 'is_string', ARRAY_FILTER_USE_KEY);
+
+                // Вызываем функцию-обработчик с параметрами
+                return $callback(...$parameters);
             }
         }
+
+        return null;
     }
 
     /**
