@@ -178,11 +178,10 @@ class Telegram
         return null;
     }
 
-
     /**
      * Определяет сообщение для бота и выполняет соответствующий обработчик, если сообщение совпадает с паттерном.
      *
-     * @param string|array $pattern Это строка или массив строк, по которым будет искать, что сообщение соответствует паттерну.
+     * @param string|array $pattern Это строка или массив строк/регулярных выражений, по которым будет искать совпадение с сообщением.
      * @param Closure $callback Функция-обработчик для выполнения, если сообщение совпадает с паттерном.
      *
      * @return mixed Результат выполнения функции-обработчика.
@@ -196,9 +195,14 @@ class Telegram
 
         // Пробегаемся по каждому паттерну
         foreach ($patterns as $singlePattern) {
-            // Преобразуем паттерн с параметрами в регулярное выражение
-            $singlePattern = str_replace(['{', '}'], ['(?P<', '>[^}]+)'], $singlePattern);
-            $singlePattern = "/^" . str_replace('/', '\/', $singlePattern) . "$/";
+            // Проверяем, является ли паттерн регулярным выражением
+            $isRegex = preg_match('/^\/.*\/[a-z]*$/i', $singlePattern);
+
+            // Если это не регулярное выражение, преобразуем паттерн с параметрами в регулярное выражение
+            if (!$isRegex) {
+                $singlePattern = str_replace(['{', '}'], ['(?P<', '>[^}]+)'], $singlePattern);
+                $singlePattern = "/^" . str_replace('/', '\/', $singlePattern) . "$/";
+            }
 
             if (preg_match($singlePattern, $messageText, $matches)) {
                 // Извлекаем только значения параметров из совпавших данных и передаем их в функцию-обработчик
@@ -211,6 +215,8 @@ class Telegram
 
         return null;
     }
+
+
 
     /**
      * Определяет сообщение от пользователя и выполняет ошибку.
@@ -234,7 +240,6 @@ class Telegram
                 $callback();
             }
         }
-
     }
 
     private function findMatch($data, $array)
@@ -273,5 +278,4 @@ class Telegram
             return $this->lastword($this->getMessageText());
         }
     }
-
 }

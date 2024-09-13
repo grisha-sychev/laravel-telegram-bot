@@ -6,7 +6,7 @@ use Reijo\Telebot\Api\Telegram;
 use Illuminate\Support\Facades\Artisan;
 
 
-Artisan::command("t:set-webhook {namebot=main}", function ($namebot) {
+Artisan::command("t:set {namebot=main}", function ($namebot) {
   $client = new Telegram($this->argument('namebot'));
   if ($client !== null) {
     $array = json_decode($client->setWebhook(), true);
@@ -19,7 +19,7 @@ Artisan::command("t:set-webhook {namebot=main}", function ($namebot) {
   }
 });
 
-Artisan::command("t:remove-webhook {namebot=mybot}", function ($namebot) {
+Artisan::command("t:remove {namebot=mybot}", function ($namebot) {
   $client = new Telegram($this->argument('namebot'));
   if ($client !== null) {
     $array = json_decode($client->removeWebhook(), true);
