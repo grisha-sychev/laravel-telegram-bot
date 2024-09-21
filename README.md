@@ -40,7 +40,7 @@ php artisan migrate
 
 - Зарегестрируйте webhook
 ```
-php artisan t:set-webhook
+php artisan t:set
 ```
 
 - Теперь вы можете в вашем боте вызвать команду `start` и получить ответ `Hello Word`
