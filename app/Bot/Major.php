@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Bots;
+namespace App\Bot;
 
 use Reijo\Telebot\ApiMod;
 use App\Models\User;
@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Storage;
 use GuzzleHttp\Client;
 use Illuminate\Support\Str;
 
-class Main extends ApiMod
+class Major extends ApiMod
 {
     public function __construct($bot = 'main')
     {
@@ -16,7 +16,7 @@ class Main extends ApiMod
     }
 
 
-    public function check($updated = true, $uuid = '')
+    public function check($updated = true)
     {
         $user = $this->getUserData();
 

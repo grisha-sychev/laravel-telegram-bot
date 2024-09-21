@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Scenarios\MainBot;
+namespace App\Http\Bots\Major;
 
 class Start
 {

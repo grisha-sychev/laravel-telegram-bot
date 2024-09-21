@@ -3,7 +3,7 @@
 // В url введите вашу ссылку 
 return [
     'bots' => [
-        "main" => [
+        "major" => [
             "token" => "{your_token}",
             "url" => "https://{your_url}/bot/main",
         ]
