@@ -119,7 +119,8 @@ class Telegram
         // Проверка для текста сообщения
         foreach ($commands as $cmd) {
             if ($cmd === $this->firstword($messageText)) {
-                return $callback();
+                $arguments = $this->getArguments($messageText);
+                $callback(...$arguments);
             }
         }
 
@@ -127,12 +128,27 @@ class Telegram
         if ($cb && is_object($cb)) {
             foreach ($commands as $cmd) {
                 if ($cmd === "/" . $cb->callback_data) { // сравниваем с callback_data
-                    return $callback();
+                    $arguments = $this->getArguments($cb->callback_data);
+                    $callback(...$arguments);
                 }
             }
         }
 
         return null;
+    }
+
+    /**
+     * Извлекает аргументы из текста команды.
+     *
+     * @param string $text Текст команды.
+     *
+     * @return array Массив аргументов.
+     */
+    private function getArguments($text)
+    {
+        $parts = explode(' ', $text);
+        array_shift($parts); // Удаляем первую часть, так как это команда
+        return $parts;
     }
 
     /**
@@ -170,7 +186,8 @@ class Telegram
                         $this->editMessage($this->getUserId(), $this->getMessageId(), $this->getMessageText());
                     }
 
-                    return $callback(...$parameters);
+                    $callback(...$parameters);
+                    exit; // Завершаем выполнение скрипта после выполнения callback
                 }
             }
         }
@@ -209,7 +226,8 @@ class Telegram
                 $parameters = array_filter($matches, 'is_string', ARRAY_FILTER_USE_KEY);
 
                 // Вызываем функцию-обработчик с параметрами
-                return $callback(...$parameters);
+                $callback(...$parameters);
+                exit; // Завершаем выполнение скрипта после выполнения callback
             }
         }
 
@@ -267,15 +285,4 @@ class Telegram
         }
     }
 
-    /**
-     * Аругмент любой команды.
-     * 
-     * @return int|string|null Результат выполнения функции-обработчика.
-     */
-    public function argument()
-    {
-        if ($this->command === $this->firstword($this->getMessageText())) {
-            return $this->lastword($this->getMessageText());
-        }
-    }
 }

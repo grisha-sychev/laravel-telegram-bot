@@ -27,14 +27,27 @@ class Messages
     }
 
     /**
-     * Метод для получения значения последнего сообщения
+     * Метод для получения значения последнего сообщения и выполнения callback
      *
-     * @return string|null Возвращает сообщение или null, если шаг не существует
+     * @param string $value Значение сообщения
+     * @param Closure $callback Функция обратного вызова
+     * 
+     * @return mixed Результат выполнения функции-обработчика.
      */
-    public function getMessage(): string|null
+    public function getMessage($value, $callback): mixed
     {
-        $message = Message::where('id_user', $this->bot->getUserId())->first();
-        return $message ? $message->text : null;
+        $messageText = $this->bot->getMessageText();
+        $cb = $this->bot->getCallbackData();
+
+        if (!empty($messageText) && $messageText !== '' && !$cb && !is_object($cb)) {
+            $message = Message::where('id_user', $this->bot->getUserId())->first();
+
+            if ($value === $message->text) {
+                return $callback($value, $message);
+            }
+        }
+
+        return null;
     }
 
     /**

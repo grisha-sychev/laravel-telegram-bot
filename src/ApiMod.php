@@ -20,15 +20,15 @@ class ApiMod extends Telegram
      *
      * @param string|array $message Текст сообщения.
      * @param array|null $keyboard Клавиатура для сообщения (необязательно).
-     * @param int $grid Деление сообщений на столбцы.
+     * @param int|array $layout Число делений или массив с ручным расположением.
      * @param int $type_keyboard Тип каливатуры 1 - keyboard 2 - inlineKeyboard
      * @param string|null $parse_mode Включение HTML мода, по умолчанию включен (необязательно).
      * 
      */
-    public function sendSelf($message, $keyboard = null, $grid = 2, $type_keyboard = 0, $parse_mode = "HTML")
+    public function sendSelf($message, $keyboard = null, $layout = 2, $type_keyboard = 0, $parse_mode = "HTML")
     {
         is_array($message) ? $message = $this->html($message) : $message;
-        $keyboard ? $keygrid = $this->grid($keyboard, $grid) : $keyboard;
+        $keyboard ? $keygrid = $this->grid($keyboard, $layout) : $keyboard;
         $type_keyboard === 1 ? $type = "inlineKeyboard" : $type = "keyboard";
         return $this->sendMessage($this->getUserId(), $message, $keyboard ? $this->$type($keygrid) : $keyboard, $parse_mode);
     }
@@ -38,13 +38,13 @@ class ApiMod extends Telegram
      *
      * @param string|array $message Текст сообщения.
      * @param array|null $keyboard Клавиатура для сообщения (необязательно).
-     * @param int $grid Деление сообщений на столбцы.
+     * @param int $layout Число делений или массив с ручным расположением.
      * @param string|null $parse_mode Включение HTML мода, по умолчанию включен (необязательно).
      * 
      */
-    public function sendSelfInline($message, $keyboard = null, $grid = 2, $parse_mode = "HTML")
+    public function sendSelfInline($message, $keyboard = null, $layout = 2, $parse_mode = "HTML")
     {
-        return $this->sendSelf($message, $keyboard, $grid, 1, $parse_mode);
+        return $this->sendSelf($message, $keyboard, $layout, 1, $parse_mode);
     }
 
 
@@ -66,15 +66,15 @@ class ApiMod extends Telegram
      * @param string|array $message Текст сообщения.
      * @param string $message_id id сообщения
      * @param array|null $keyboard Клавиатура для сообщения (необязательно).
-     * @param int $grid Деление сообщений на столбцы.
+     * @param int $layout Число делений или массив с ручным расположением.
      * @param int $type_keyboard Тип каливатуры 1 - keyboard 2 - inlineKeyboard
      * @param string|null $parse_mode Включение HTML мода, по умолчанию включен (необязательно).
      * 
      */
-    public function editSelf($message_id, $message, $keyboard = null, $grid = 2, $type_keyboard = 0, $parse_mode = "HTML")
+    public function editSelf($message_id, $message, $keyboard = null, $layout = 2, $type_keyboard = 0, $parse_mode = "HTML")
     {
         is_array($message) ? $message = $this->html($message) : $message;
-        $keyboard ? $keygrid = $this->grid($keyboard, $grid) : $keyboard;
+        $keyboard ? $keygrid = $this->grid($keyboard, $layout) : $keyboard;
         $type_keyboard === 1 ? $type = "inlineKeyboard" : $type = "keyboard";
         return $this->editMessage($this->getUserId(), $message_id, $message, $keyboard ? $this->$type($keygrid) : $keyboard, $parse_mode);
     }
@@ -85,14 +85,14 @@ class ApiMod extends Telegram
      * @param string $message_id id сообщения
      * @param string|array $message Текст сообщения.
      * @param array|null $keyboard Клавиатура для сообщения (необязательно).
-     * @param int $grid Деление сообщений на столбцы.
+     * @param int $layout Число делений или массив с ручным расположением.
      * @param string|null $parse_mode Включение HTML мода, по умолчанию включен (необязательно).
      * 
      */
 
-    public function editSelfInline($message_id, $message, $keyboard = null, $grid = 2, $parse_mode = "HTML")
+    public function editSelfInline($message_id, $message, $keyboard = null, $layout = 2, $parse_mode = "HTML")
     {
-        return $this->editSelf($message_id, $message, $keyboard, $grid, 1, $parse_mode);
+        return $this->editSelf($message_id, $message, $keyboard, $layout, 1, $parse_mode);
     }
 
     /**
@@ -101,14 +101,14 @@ class ApiMod extends Telegram
      * @param int $id Идентификатор пользователя.
      * @param string $message Текст сообщения.
      * @param array|null $keyboard Клавиатура для сообщения (необязательно).
-     * @param int $grid Деление сообщений на столбцы.
+     * @param int $layout Число делений или массив с ручным расположением.
      * @param int $type_keyboard Тип каливатуры 0 - keyboard 1 - inlineKeyboard
      * @param string|null $parse_mode Включение HTML мода, по умолчанию включен (необязательно).
      *
      */
-    public function sendOut($id, $message, $keyboard = null, $grid = 2, $type_keyboard = 0, $parse_mode = "HTML")
+    public function sendOut($id, $message, $keyboard = null, $layout = 2, $type_keyboard = 0, $parse_mode = "HTML")
     {
-        $keyboard ? $keygrid = $this->grid($keyboard, $grid) : $keyboard;
+        $keyboard ? $keygrid = $this->grid($keyboard, $layout) : $keyboard;
         $type_keyboard === 1 ? $type = "inlineKeyboard" : $type = "keyboard";
         return $this->sendMessage($id, $message, $keyboard ? $this->$type($keygrid) : $keyboard, $parse_mode);
     }
@@ -120,45 +120,50 @@ class ApiMod extends Telegram
      * @param int $id Идентификатор пользователя.
      * @param string $message Текст сообщения.
      * @param array|null $keyboard Клавиатура для сообщения (необязательно).
-     * @param int $grid Деление сообщений на столбцы.
+     * @param int $layout Число делений или массив с ручным расположением.
      * @param string|null $parse_mode Включение HTML мода, по умолчанию включен (необязательно).
      *
      */
-    public function sendOutInline($id, $message, $keyboard = null, $grid = 2, $parse_mode = "HTML")
+    public function sendOutInline($id, $message, $keyboard = null, $layout = 2, $parse_mode = "HTML")
     {
-        return $this->sendOut($id, $message, $keyboard, $grid, 1, $parse_mode);
+        return $this->sendOut($id, $message, $keyboard, $layout, 1, $parse_mode);
     }
 
     /**
-     * Метод для создания подгрупп для клавиатуры
+     * Метод для создания подгрупп для клавиатуры с возможностью ручного управления расположением кнопок
      *
      * @param array $array
-     * @param int $number число делений, по умалчанию 2
+     * @param int|array $layout Число делений или массив с ручным расположением.
      * 
      * @return array Возвращает новый массив
      */
-    public function grid($array, $number = 2)
+    public function grid($array, $layout = 2)
     {
-        if ($number <= 0) {
+        if (is_array($layout)) {
+            $result = [];
+            $index = 0;
+            foreach ($layout as $count) {
+                $result[] = array_slice($array, $index, $count);
+                $index += $count;
+            }
+            return $result;
+        } elseif (is_int($layout) && $layout > 0) {
+            $result = [];
+            $currentSubarray = [];
+            foreach ($array as $element) {
+                $currentSubarray[] = $element;
+                if (count($currentSubarray) == $layout) {
+                    $result[] = $currentSubarray;
+                    $currentSubarray = [];
+                }
+            }
+            if (!empty($currentSubarray)) {
+                $result[] = $currentSubarray;
+            }
+            return $result;
+        } else {
             return [];
         }
-
-        $result = [];
-
-        $currentSubarray = [];
-
-        foreach ($array as $element) {
-            $currentSubarray[] = $element;
-            if (count($currentSubarray) == $number) {
-                $result[] = $currentSubarray;
-                $currentSubarray = [];
-            }
-        }
-        if (!empty($currentSubarray)) {
-            $result[] = $currentSubarray;
-        }
-
-        return $result;
     }
 
     /**
