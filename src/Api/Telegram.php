@@ -120,7 +120,7 @@ class Telegram
         foreach ($commands as $cmd) {
             if ($cmd === $this->firstword($messageText)) {
                 $arguments = $this->getArguments($messageText);
-                $callback(...$arguments);
+                $callback($arguments);
             }
         }
 
@@ -129,7 +129,7 @@ class Telegram
             foreach ($commands as $cmd) {
                 if ($cmd === "/" . $cb->callback_data) { // сравниваем с callback_data
                     $arguments = $this->getArguments($cb->callback_data);
-                    $callback(...$arguments);
+                    $callback($arguments);
                 }
             }
         }
@@ -284,5 +284,4 @@ class Telegram
             return $callback();
         }
     }
-
 }
