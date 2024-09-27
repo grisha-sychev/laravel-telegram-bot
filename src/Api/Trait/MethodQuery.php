@@ -11,7 +11,7 @@ trait MethodQuery
     public function setWebhook()
     {
         return $this->method('setWebhook', [
-            "url" => $this->getBot()["url"],
+            "url" => 'https://' . $_SERVER['HTTP_HOST'] . '/bot/' . $this->getToken(),
         ]);
     }
 

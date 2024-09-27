@@ -21,6 +21,6 @@ class TelegramBootstrapServiceProvider extends ServiceProvider
             __DIR__ . '/../../config' => config_path(),
             __DIR__ . '/../../database' => database_path(),
             __DIR__ . '/../../routes' => base_path('routes'),
-        ]);
+        ], "laravel-assets");
     }
 }
