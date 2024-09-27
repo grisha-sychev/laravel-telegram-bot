@@ -12,8 +12,8 @@
     "extra": {
         "laravel": {
             "providers": [
-                "Reijo\\Telebot\\TelegramBootstrapServiceProvider",
-                "Reijo\\Telebot\\TelegramServiceProvider"
+                "Reijo\\Telebot\\Providers\\TelegramBootstrapServiceProvider",
+                "Reijo\\Telebot\\Providers\\TelegramServiceProvider"
             ]
         }
     }
