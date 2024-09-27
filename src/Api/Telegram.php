@@ -282,4 +282,16 @@ class Telegram
             return $callback();
         }
     }
+
+    /**
+     * Аругмент любой команды.
+     * 
+     * @return int|string|null Результат выполнения функции-обработчика.
+     */
+    public function argument()
+    {
+        if ($this->command === $this->firstword($this->getMessageText())) {
+            return $this->lastword($this->getMessageText());
+        }
+    }
 }
