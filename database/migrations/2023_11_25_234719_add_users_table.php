@@ -14,7 +14,6 @@ return new class extends Migration {
             $table->string('login')->nullable();
             $table->bigInteger('tg_id')->unique();
             $table->string('avatar')->nullable();
-            $table->string('step')->nullable();
         });
     }
 
@@ -27,7 +26,6 @@ return new class extends Migration {
             $table->string('login')->nullable();
             $table->bigInteger('tg_id')->unique();
             $table->string('avatar')->nullable();
-            $table->string('step')->nullable();
         });
     }
 };

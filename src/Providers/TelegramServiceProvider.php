@@ -19,7 +19,7 @@ class TelegramServiceProvider extends ServiceProvider
     {
         $this->routes(function () {
             Route::middleware('web')->withoutMiddleware(['web', 'App\Http\Middleware\VerifyCsrfToken'])
-                ->group(base_path('routes/telegram.php'));
+                ->group(base_path('routes/tgb.php'));
         });
     }
 }

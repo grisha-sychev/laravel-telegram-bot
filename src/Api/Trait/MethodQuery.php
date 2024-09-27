@@ -337,5 +337,58 @@ trait MethodQuery
     {
         return $this->method('deleteMessage', ["chat_id" => $chat_id, "message_id" => $message_id]);
     }
+    
+    /**
+     * Отправляет счет на оплату в чат.
+     *
+     * @param int $chat_id Идентификатор чата.
+     * @param string $title Название продукта.
+     * @param string $description Описание продукта.
+     * @param string $payload Полезная нагрузка, которая будет передана в callback.
+     * @param string $provider_token Токен провайдера платежей.
+     * @param string $start_parameter Параметр для глубоких ссылок.
+     * @param string $currency Валюта (например, "USD").
+     * @param array $prices Массив цен (каждый элемент - это массив с ключами 'label' и 'amount').
+     * @param int|null $reply_to_message_id Идентификатор сообщения, на которое нужно ответить (необязательно).
+     * @param bool $disable_notification Отключить уведомления о сообщении (по умолчанию false).
+     * @param string|null $photo_url URL фотографии продукта (необязательно).
+     * @param int|null $photo_size Размер фотографии продукта (необязательно).
+     * @param int|null $photo_width Ширина фотографии продукта (необязательно).
+     * @param int|null $photo_height Высота фотографии продукта (необязательно).
+     * @param bool $need_name Требуется ли имя пользователя (по умолчанию false).
+     * @param bool $need_phone_number Требуется ли номер телефона пользователя (по умолчанию false).
+     * @param bool $need_email Требуется ли email пользователя (по умолчанию false).
+     * @param bool $need_shipping_address Требуется ли адрес доставки (по умолчанию false).
+     * @param bool $send_phone_number_to_provider Отправить ли номер телефона провайдеру (по умолчанию false).
+     * @param bool $send_email_to_provider Отправить ли email провайдеру (по умолчанию false).
+     * @param bool $is_flexible Гибкие цены (по умолчанию false).
+     *
+     */
+    public function sendInvoice($chat_id, $title, $description, $payload, $provider_token, $start_parameter, $currency, $prices, $reply_to_message_id = null, $disable_notification = false, $photo_url = null, $photo_size = null, $photo_width = null, $photo_height = null, $need_name = false, $need_phone_number = false, $need_email = false, $need_shipping_address = false, $send_phone_number_to_provider = false, $send_email_to_provider = false, $is_flexible = false)
+    {
+        return $this->method('sendInvoice', [
+            "chat_id" => $chat_id,
+            "title" => $title,
+            "description" => $description,
+            "payload" => $payload,
+            "provider_token" => $provider_token,
+            "start_parameter" => $start_parameter,
+            "currency" => $currency,
+            "prices" => $prices,
+            "reply_to_message_id" => $reply_to_message_id,
+            "disable_notification" => $disable_notification,
+            "photo_url" => $photo_url,
+            "photo_size" => $photo_size,
+            "photo_width" => $photo_width,
+            "photo_height" => $photo_height,
+            "need_name" => $need_name,
+            "need_phone_number" => $need_phone_number,
+            "need_email" => $need_email,
+            "need_shipping_address" => $need_shipping_address,
+            "send_phone_number_to_provider" => $send_phone_number_to_provider,
+            "send_email_to_provider" => $send_email_to_provider,
+            "is_flexible" => $is_flexible,
+        ]);
+    }
 
 }

@@ -16,27 +16,25 @@ class Telegram
     use User, Photo, Program, Helpers, MethodQuery;
 
     public $token;
-    public $bot;
+    public $bot = 'default';
     public $command;
     public $callback;
     public $message;
 
-
-    /**
-     * Определяет бота
-     */
-    private function getBot(): array
-    {
-        return config('telegram.bots.' . $this->bot);
-    }
-
     /**
      * Конструктор класса Client.
      */
-    public function __construct(string $bot = 'main')
+    public function __construct()
     {
-        $this->bot = $bot;
-        $this->token = $this->getBot()["token"];
+        $this->token = $this->getToken();
+    }
+    
+    /**
+     * Определяет бота
+     */
+    private function getToken(): array
+    {
+        return config('tgb.' . $this->bot);
     }
 
     /**
