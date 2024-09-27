@@ -14,7 +14,11 @@
             "providers": [
                 "Reijo\\Telebot\\Providers\\TelegramBootstrapServiceProvider",
                 "Reijo\\Telebot\\Providers\\TelegramServiceProvider"
-            ]
+            ],
+            "priority": {
+                "Reijo\\Telebot\\Providers\\TelegramBootstrapServiceProvider": 1,
+                "Reijo\\Telebot\\Providers\\TelegramServiceProvider": 2
+            }
         }
     }
 }
