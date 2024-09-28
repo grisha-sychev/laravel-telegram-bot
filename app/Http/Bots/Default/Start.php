@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Bots\Exemple;
+namespace App\Http\Bots\Default;
 
 use Reijo\Telebot\Base\Bot;
 

@@ -10,16 +10,10 @@ use Illuminate\Support\Facades\Route;
  */
 class TelegramServiceProvider extends ServiceProvider
 {
-    /**
-     * Bootstrap services.
-     *
-     * @return void
-     */
-    public function register()
+    public function map()
     {
-        $this->routes(function () {
-            Route::middleware('web')->withoutMiddleware(['web', 'App\Http\Middleware\VerifyCsrfToken'])
-                ->group(base_path('routes/tgb.php'));
-        });
+        Route::middleware(['web'])
+             ->namespace($this->namespace)
+             ->group(base_path('routes/tgb.php'));
     }
 }
