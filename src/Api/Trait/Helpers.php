@@ -14,6 +14,15 @@ trait Helpers
         return isset($matches[0]) ? $matches[0] : "";
     }
 
+    private function lastword($str): string
+    {
+        if ($str === $this->command) {
+            return '';
+        }
+        preg_match('/(\S+)\s(.+)/', $str, $matches);
+        return isset($matches[2]) ? $matches[2] : "";
+    }
+
     /**
      * Внутренний метод, проверяет, существует ли указанный ключ в массиве.
      *

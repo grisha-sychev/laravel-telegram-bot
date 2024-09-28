@@ -24,13 +24,13 @@ trait Program
      */
     public function method($method, $query = [])
     {
-        $this->response = Http::withoutVerifying()->get("https://api.telegram.org/bot" . $this->token . "/" . $method . ($query ? '?' . http_build_query($query) : ''));
+        $this->response = Http::withoutVerifying()->get("https://api.telegram.org/bot" . $this->getToken() . "/" . $method . ($query ? '?' . http_build_query($query) : ''));
         return $this->response;
     }
 
     public function file($fial_path)
     {
-        return "https://api.telegram.org/file/bot" . $this->token . "/" . $fial_path;
+        return "https://api.telegram.org/file/bot" . $this->getToken() . "/" . $fial_path;
     }
 
     public function body()

@@ -15,24 +15,27 @@ class Telegram
 {
     use User, Photo, Program, Helpers, MethodQuery;
 
-    public $token;
-    public $bot = 'default';
+    public $bot;
     public $command;
     public $callback;
     public $message;
 
     /**
      * Конструктор класса Client.
+     *
+     * @param string|null $bot Имя бота (необязательный параметр).
      */
-    public function __construct()
+    public function __construct(string $bot = null)
     {
-        $this->token = $this->getToken();
+        if ($bot) {
+            $this->bot = $bot;
+        }
     }
-    
+
     /**
      * Определяет бота
      */
-    private function getToken(): array
+    private function getToken(): string
     {
         return config('tgb.' . $this->bot);
     }
@@ -280,6 +283,18 @@ class Telegram
     {
         if (mb_substr($this->getMessageText(), 0, 1) !== "/") {
             return $callback();
+        }
+    }
+
+    /**
+     * Аругмент любой команды.
+     * 
+     * @return int|string|null Результат выполнения функции-обработчика.
+     */
+    public function argument()
+    {
+        if ($this->command === $this->firstword($this->getMessageText())) {
+            return $this->lastword($this->getMessageText());
         }
     }
 }
