@@ -30,10 +30,41 @@ Artisan::command("tgb:new {name} {token}", function () {
     echo "
   $description
        ";
-  } else {
-    echo "Error: There is no such bot!";
+    if ($description === "Webhook is already set") {
+      return;
+    }
   }
+
+  // Создаем папку и файл для бота
+  $botNameCapitalized = ucfirst($name);
+  $botDirectory = app_path("Http/Bots/{$botNameCapitalized}");
+  $startFilePath = "{$botDirectory}/Start.php";
+
+  if (!file_exists($botDirectory)) {
+    mkdir($botDirectory, 0755, true);
+  }
+
+  $startFileContent = <<<PHP
+<?php
+
+namespace App\Http\Bots\\{$botNameCapitalized};
+
+use Reijo\Telebot\Base\Bot;
+
+class Start extends Bot
+{
+    public function handler()
+    {
+        \$this->command("start", function () {
+            \$this->sendSelf("Hello World");
+        });
+    }
+}
+PHP;
+
+  file_put_contents($startFilePath, $startFileContent);
 });
+
 
 Artisan::command("tgb:del {name}", function () {
   $name = $this->argument('name');
