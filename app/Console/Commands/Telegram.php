@@ -44,12 +44,13 @@ Artisan::command("tgb:new {name} {token}", function () {
     mkdir($botDirectory, 0755, true);
   }
 
-  $startFileContent = <<<PHP
+  if (!file_exists($startFilePath)) {
+    $startFileContent = <<<PHP
 <?php
 
 namespace App\Http\Bots\\{$botNameCapitalized};
 
-use Reijo\Telebot\Base\Bot;
+use App\Http\Bots\Base\Bot;
 
 class Start extends Bot
 {
@@ -62,7 +63,10 @@ class Start extends Bot
 }
 PHP;
 
-  file_put_contents($startFilePath, $startFileContent);
+    file_put_contents($startFilePath, $startFileContent);
+  } else {
+    echo "Error: Start.php file already exists!";
+  }
 });
 
 

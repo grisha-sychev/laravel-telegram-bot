@@ -13,7 +13,6 @@ return new class extends Migration {
         Schema::table('users', function (Blueprint $table) {
             $table->string('login')->nullable();
             $table->bigInteger('tg_id')->unique();
-            $table->string('avatar')->nullable();
         });
     }
 
@@ -25,7 +24,6 @@ return new class extends Migration {
         Schema::table('users', function (Blueprint $table) {
             $table->string('login')->nullable();
             $table->bigInteger('tg_id')->unique();
-            $table->string('avatar')->nullable();
         });
     }
 };
