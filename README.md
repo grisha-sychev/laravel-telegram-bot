@@ -1,50 +1,33 @@
-# Telebot Laravel - Api Telegram Bot
-Telergam Bot SDK пакет для Laravel
+# Telebot Laravel – Api Telegram Bot
 
-- Прежде чем установить, подключите приложение к базе данных
-```
+Telergam Bot SDK — это готовый пакет для Laravel, который значительно упрощает процесс разработки ботов для Telegram.
+
+## Установка и настройка
+
+- Прежде чем приступить к установке, убедитесь, что ваше приложение подключено к базе данных.
+
+```bash
 composer require reijo/telebot
 ```
 
-- Добавьте в конфигурацию `app.php` провайдеры
-```php
-'providers' => ServiceProvider::defaultProviders()->merge([
-    /*
-     * Package Service Providers...
-     */
-    Reijo\Telebot\Providers\TelegramServiceProvider::class,
-    Reijo\Telebot\Providers\TelegramBootstrapServiceProvider::class,
-])->toArray(),
-```
-- Выполните выгрузку провайдеров
-```
-php artisan vendor:publish --tag=reijo-telebot
-```
-- В конфигурации `telegram.php` добавьте `token` и адрес сайта, `/bot/main` являеться дефолтным адресом основного бота, рекомендуем основного бота оставить по этому адресу
+- Затем выполните миграцию:
 
-```php
-return [
-    'bots' => [
-        "main" => [
-            "token" => "",
-            "url" => "https://domen.com/bot/main",
-        ]
-    ],
-];
-```
-
-- Теперь можете выполнить миграцию
-```
+```bash
 php artisan migrate
 ```
 
-- Зарегестрируйте webhook
-```
-php artisan t:set
+- После этого зарегистрируйте webhook под именем вашего бота (по умолчанию default), используя команду:
+
+```bash
+php artisan tgb:new default {ваш токен}
 ```
 
-- Теперь вы можете в вашем боте вызвать команду `start` и получить ответ `Hello Word`
-- Вся логика основного бота находиться в разделе `app/Scenarios/MainBot/Start.php`
-- Внутрення логика бота находиться в разделе `app/Bots/Main.php`
+## Использование бота
+
+- Теперь, когда все настроено, вы можете вызвать команду `start` в вашем боте и получить ответ `Hello Word`.
+
+- Вся логика основного бота сосредоточена в файле `app/Http/Bots/Default/Start.php`, который можно легко найти и отредактировать.
+
+- Если вы решите создать нового бота с другим именем, новый раздел будет автоматически создан.
 
 
