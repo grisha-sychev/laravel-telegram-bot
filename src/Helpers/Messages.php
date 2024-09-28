@@ -19,7 +19,7 @@ class Messages
     /**
      * Конструктор класса
      *
-     * @param \Reijo\Telebot\ApiMod $bot Экземпляр бота
+     * @param \Reijo\Telebot\Base\Bot $bot Экземпляр бота
      */
     public function __construct($bot)
     {
