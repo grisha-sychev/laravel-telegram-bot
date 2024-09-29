@@ -1,6 +1,6 @@
 <?php
 
-namespace Reijo\Telebot\Providers;
+namespace Tgb\Tgb\Providers;
 
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Route;

@@ -1,9 +1,9 @@
 <?php
 
-namespace Reijo\Telebot\Api\Trait;
+namespace Tgb\Tgb\Api\Trait;
 
-use Reijo\Telebot\Data\CallbackQuery;
-use Reijo\Telebot\Data\MessageQuery;
+use Tgb\Tgb\Data\CallbackQuery;
+use Tgb\Tgb\Data\MessageQuery;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Request;
 

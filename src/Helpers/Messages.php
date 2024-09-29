@@ -1,6 +1,6 @@
 <?php
 
-namespace Reijo\Telebot\Helpers;
+namespace Tgb\Tgb\Helpers;
 
 use App\Models\Message;
 
@@ -19,7 +19,7 @@ class Messages
     /**
      * Конструктор класса
      *
-     * @param \Reijo\Telebot\Base\Bot $bot Экземпляр бота
+     * @param \Tgb\Tgb\Base\Bot $bot Экземпляр бота
      */
     public function __construct($bot)
     {

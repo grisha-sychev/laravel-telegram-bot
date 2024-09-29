@@ -7,7 +7,7 @@ Telergam Bot SDK — это готовый пакет для Laravel, котор
 - Прежде чем приступить к установке, убедитесь, что ваше приложение подключено к базе данных.
 
 ```bash
-composer require reijo/telebot
+composer require tgb/tgb
 ```
 
 - Затем выполните миграцию:

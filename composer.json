@@ -1,19 +1,19 @@
 {
     "name": "tgb/tgb",
-    "description": "Telergam bot SDK package for laravel",
+    "description": "Telergam bot SDK package for Laravel",
     "type": "library",
     "license": "MIT",
     "require": {},
     "autoload": {
         "psr-4": {
-            "Reijo\\Telebot\\": "src/"
+            "Tgb\\Tgb\\": "src/"
         }
     },
     "extra": {
         "laravel": {
             "providers": [
-                "Reijo\\Telebot\\Providers\\TelegramBootstrapServiceProvider",
-                "Reijo\\Telebot\\Providers\\TelegramServiceProvider"
+                "Tgb\\Tgb\\Providers\\TelegramBootstrapServiceProvider",
+                "Tgb\\Tgb\\Providers\\TelegramServiceProvider"
             ]
         }
     }

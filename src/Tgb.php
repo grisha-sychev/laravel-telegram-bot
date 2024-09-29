@@ -1,8 +1,8 @@
 <?php
 
-namespace Reijo\Telebot;
+namespace Tgb\Tgb;
 
-use Reijo\Telebot\Api\Telegram;
+use Tgb\Tgb\Api\Telegram;
 
 /**
  * Класс Tgb
@@ -11,7 +11,7 @@ use Reijo\Telebot\Api\Telegram;
  * Он включает методы для отправки сообщений, обработки обновлений и другие
  * полезные функции для взаимодействия с ботом.
  * 
- * @package Reijo\Telebot
+ * @package Tgb\Tgb
  */
 
 class Tgb extends Telegram

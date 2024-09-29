@@ -1,12 +1,12 @@
 <?php
 
-namespace Reijo\Telebot\Api;
+namespace Tgb\Tgb\Api;
 
-use Reijo\Telebot\Api\Trait\Helpers;
-use Reijo\Telebot\Api\Trait\MethodQuery;
-use Reijo\Telebot\Api\Trait\Photo;
-use Reijo\Telebot\Api\Trait\User;
-use Reijo\Telebot\Api\Trait\Program;
+use Tgb\Tgb\Api\Trait\Helpers;
+use Tgb\Tgb\Api\Trait\MethodQuery;
+use Tgb\Tgb\Api\Trait\Photo;
+use Tgb\Tgb\Api\Trait\User;
+use Tgb\Tgb\Api\Trait\Program;
 
 /**
  * Класс Api Client для управления Telegram ботом.

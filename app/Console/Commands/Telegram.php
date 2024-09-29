@@ -2,7 +2,7 @@
 
 namespace App\Console;
 
-use Reijo\Telebot\Api\Telegram;
+use Tgb\Tgb\Api\Telegram;
 use Illuminate\Support\Facades\Artisan;
 
 // Сначала записывает имя и токен в конфиг tgb, далее делает регистрацию бота

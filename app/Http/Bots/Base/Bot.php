@@ -2,7 +2,7 @@
 
 namespace App\Http\Bots\Base;
 
-use Reijo\Telebot\Tgb;
+use Tgb\Tgb\Tgb;
 use App\Models\User;
 
 class Bot extends Tgb

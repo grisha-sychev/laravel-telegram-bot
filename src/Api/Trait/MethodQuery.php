@@ -1,6 +1,6 @@
 <?php
 
-namespace Reijo\Telebot\Api\Trait;
+namespace Tgb\Tgb\Api\Trait;
 
 trait MethodQuery
 {
