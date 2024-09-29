@@ -8,7 +8,7 @@
 ![GitHub License](https://img.shields.io/github/license/grisha-sychev/laravel-telegram-bot)
 ![GitHub Repo stars](https://img.shields.io/github/stars/grisha-sychev/laravel-telegram-bot)
 
-### Laravel Telergam Bot SDK представляет собой готовый набор инструментов для Laravel, который значительно упрощает процесс создания ботов для Telegram.
+Laravel Telergam Bot SDK представляет собой готовый набор инструментов для Laravel, который значительно упрощает процесс создания ботов для Telegram.
 
 - [Простые методы](/)
 - [Callback-методы](/)
