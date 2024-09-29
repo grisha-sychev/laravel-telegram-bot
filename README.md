@@ -1,4 +1,4 @@
-# Laravel Telegram Bot
+# Telebot Laravel – Api Telegram Bot
 
 Telergam Bot SDK — это готовый пакет для Laravel, который значительно упрощает процесс разработки ботов для Telegram.
 

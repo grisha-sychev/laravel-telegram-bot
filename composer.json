@@ -9,6 +9,7 @@
             "Tgb\\Tgb\\": "src/"
         }
     },
+    
     "extra": {
         "laravel": {
             "providers": [

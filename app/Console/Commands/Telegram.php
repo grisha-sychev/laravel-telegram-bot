@@ -6,16 +6,22 @@ use Tgb\Tgb\Api\Telegram;
 use Illuminate\Support\Facades\Artisan;
 
 // Сначала записывает имя и токен в конфиг tgb, далее делает регистрацию бота
-Artisan::command("tgb:new {name} {token}", function () {
+Artisan::command("tgb:new {name} {token} {domain}", function () {
   $name = $this->argument('name');
   $token = $this->argument('token');
+  $domain = $this->argument('domain');
 
   // Записываем имя и токен в конфиг
   $configPath = config_path('tgb.php');
   $config = include $configPath;
   $config[$name] = $token;
 
-  file_put_contents($configPath, '<?php return ' . var_export($config, true) . ';');
+  file_put_contents(
+    $configPath,
+    '<?php
+
+   return ' . var_export($config, true) . ';'
+  );
 
   // Перезагружаем конфиг, чтобы изменения вступили в силу
   Artisan::call('config:cache');
@@ -23,6 +29,7 @@ Artisan::command("tgb:new {name} {token}", function () {
   // Регистрируем бота
   $client = new Telegram();
   $client->bot = $name;
+  $client->domain = $domain;
 
   if ($client !== null) {
     $array = json_decode($client->setWebhook(), true);
@@ -54,9 +61,16 @@ use App\Http\Bots\Base\Bot;
 
 class Start extends Bot
 {
+
+    public function __construct()
+    { 
+        \$this->register(false);
+    }
+
     public function handler()
     {
         \$this->command("start", function () {
+            \$this->register();
             \$this->sendSelf("Hello World");
         });
     }

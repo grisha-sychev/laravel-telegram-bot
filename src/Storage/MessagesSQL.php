@@ -1,13 +1,14 @@
 <?php
 
-namespace Tgb\Tgb\Helpers;
+namespace Tgb\Tgb\Storage;
 
 use App\Models\Message;
+use Tgb\Tgb\Storage\Interface\Messages;
 
 /**
- * Класс для работы с сообщениями
+ * Класс для работы с сообщениями через базы данных
  */
-class Messages
+class MessagesSQL implements Messages
 {
     /**
      * Экземпляр бота
@@ -83,6 +84,30 @@ class Messages
     }
 
     /**
+     * Метод для установки значения сообщения
+     *
+     * @param string $clue Значение подсказки сообщения
+     * @param mixed|null $payload Дополнительные данные сообщения
+     * @return void
+     */
+    public function setMessage($clue, $payload = null): void
+    {
+        $message = Message::where('tg_id', $this->bot->getUserId())->first();
+
+        if (! $message) {
+            $message = new Message;
+            $message->tg_id = $this->bot->getUserId();
+            $message->clue = $clue;
+            $message->payload = $payload;
+            $message->save();
+        } else {
+            $message->clue = $clue;
+            $message->payload = $payload;
+            $message->save();
+        }
+    }
+
+    /**
      * Метод для получения значения payload последнего сообщения
      *
      * @return mixed|null Значение payload или null, если сообщение не найдено
@@ -109,29 +134,6 @@ class Messages
         }
     }
 
-    /**
-     * Метод для установки значения сообщения
-     *
-     * @param string $clue Значение подсказки сообщения
-     * @param mixed|null $payload Дополнительные данные сообщения
-     * @return void
-     */
-    public function setMessage($clue, $payload = null): void
-    {
-        $message = Message::where('tg_id', $this->bot->getUserId())->first();
-
-        if (! $message) {
-            $message = new Message;
-            $message->tg_id = $this->bot->getUserId();
-            $message->clue = $clue;
-            $message->payload = $payload;
-            $message->save();
-        } else {
-            $message->clue = $clue;
-            $message->payload = $payload;
-            $message->save();
-        }
-    }
     /**
      * Метод для получения значения подсказки последнего сообщения
      *

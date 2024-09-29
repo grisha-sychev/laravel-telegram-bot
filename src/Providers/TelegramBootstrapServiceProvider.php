@@ -29,8 +29,7 @@ class TelegramBootstrapServiceProvider extends ServiceProvider
         }, ARRAY_FILTER_USE_KEY);
 
         if (!empty($pathsToPublish)) {
-            $this->publishes($pathsToPublish, "laravel-assets");
+            $this->publishes($pathsToPublish, "tgb-assets");
         }
     }
 }
-
