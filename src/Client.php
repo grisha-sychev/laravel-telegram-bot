@@ -5,7 +5,7 @@ namespace Tgb\Tgb;
 use Tgb\Tgb\Api\Telegram;
 
 /**
- * Класс Tgb
+ * Класс Client
  * 
  * Этот класс предоставляет функциональность для работы с Telegram Bot API.
  * Он включает методы для отправки сообщений, обработки обновлений и другие
@@ -14,7 +14,7 @@ use Tgb\Tgb\Api\Telegram;
  * @package Tgb\Tgb
  */
 
-class Tgb extends Telegram
+class Client extends Telegram
 {
     /**
      * Метод отправки сообщения текущему пользователю

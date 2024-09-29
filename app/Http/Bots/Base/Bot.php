@@ -2,10 +2,10 @@
 
 namespace App\Http\Bots\Base;
 
-use Tgb\Tgb\Tgb;
+use Tgb\Tgb\Client;
 use App\Models\User;
 
-class Bot extends Tgb
+class Bot extends Client
 {
     public function register($updated = true)
     {
