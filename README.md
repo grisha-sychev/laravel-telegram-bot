@@ -3,7 +3,7 @@
 ![Laravel](https://img.shields.io/badge/laravel-%23FF2D20.svg?style=for-the-badge&logo=laravel&logoColor=white)
 ![MySQL](https://img.shields.io/badge/mysql-4479A1.svg?style=for-the-badge&logo=mysql&logoColor=white) 
 ![Redis](https://img.shields.io/badge/redis-%23DD0031.svg?style=for-the-badge&logo=redis&logoColor=white)
--
+
 ![Packagist Version](https://img.shields.io/packagist/v/tgb/tgb)
 ![GitHub License](https://img.shields.io/github/license/grisha-sychev/laravel-telegram-bot)
 ![GitHub Repo stars](https://img.shields.io/github/stars/grisha-sychev/laravel-telegram-bot)
