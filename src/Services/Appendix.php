@@ -47,4 +47,25 @@ class Appendix
         return isset($body->$key) ? $body->$key : null;
     }
 
+    /**
+     * Внутренний метод, проверяет существование фотографии в сообщении и возвращает ее данные по указанному размеру.
+     *
+     * @param string $size Размер фотографии ('S', 'M' или 'L').
+     * @param string $key Ключ, по которому проверяется наличие фотографии.
+     * @return mixed Значение ключа, если фотография существует, в противном случае возвращает null.
+     */
+    public static function issetPhoto($get, $size, $key)
+    {
+        $set = $get[$size][$key];
+        $res = isset($set) ? $set : null;
+
+        switch ($size) {
+            case 0:
+                return $res;
+            case 1:
+                return $res;
+            case 2:
+                return $res;
+        }
+    }
 }

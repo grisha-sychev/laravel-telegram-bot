@@ -151,204 +151,6 @@ class Telegram
     }
 
     /**
-     * Определяет команду для бота и выполняет соответствующий обработчик, если команда совпадает с текстом сообщения или callback.
-     *
-     * @param string|array $command Команда, начинающаяся с символа "/" (например, "/start") или массив команд.
-     * @param Closure $callback Функция-обработчик для выполнения, если команда или callback совпадают.
-     *
-     * @return mixed Результат выполнения функции-обработчика.
-     */
-    public function command($command, $callback)
-    {
-        // Приводим команду к массиву, если это строка
-        $commands = is_array($command) ? $command : [$command];
-
-        // Преобразуем команды, добавляя "/" к каждой, если необходимо
-        $commands = array_map(function ($cmd) {
-            return "/" . ltrim($cmd, '/');
-        }, $commands);
-
-        // Привязываем callback к текущему объекту
-        $callback = $callback->bindTo($this, $this);
-
-        // Получаем текст сообщения и данные callback
-        $messageText = $this->getMessageText();
-        $cb = $this->getCallbackData();
-
-        // Проверка для текста сообщения
-        foreach ($commands as $cmd) {
-            if ($cmd === Appendix::firstword($messageText)) {
-                $arguments = $this->getArguments($messageText);
-                $callback($arguments);
-            }
-        }
-
-        // Проверка для callback данных
-        if ($cb && is_object($cb)) {
-            foreach ($commands as $cmd) {
-                if ($cmd === "/" . $cb->callback_data) { // сравниваем с callback_data
-                    $arguments = $this->getArguments($cb->callback_data);
-                    $callback($arguments);
-                }
-            }
-        }
-
-        return null;
-    }
-
-    /**
-     * Извлекает аргументы из текста команды.
-     *
-     * @param string $text Текст команды.
-     *
-     * @return array Массив аргументов.
-     */
-    private function getArguments($text)
-    {
-        $parts = explode(' ', $text);
-        array_shift($parts); // Удаляем первую часть, так как это команда
-        return $parts;
-    }
-
-    /**
-     * Определяет callback для бота и выполняет соответствующий обработчик, если команда совпадает с текстом сообщения.
-     *
-     * @param string|array $pattern  Это строка или массив строк, по которым будет искать какой callback выполнить, например hello{id} или greet{name}.
-     * @param Closure $callback Функция-обработчик для выполнения, если команда совпадает с паттерном.
-     * @param bool $deleteInlineButtons Удалять ли кнопки прошлого сообщения
-     * 
-     * @return mixed Результат выполнения функции-обработчика.
-     */
-    public function callback($pattern, $callback, $deleteInlineButtons = false)
-    {
-        $cb = $this->getCallbackData();
-
-        // Добавляем проверку на существование и тип переменной $cb
-        if ($cb && is_object($cb)) {
-            // Приводим паттерн к массиву, если это строка
-            $patterns = is_array($pattern) ? $pattern : [$pattern];
-
-            // Пробегаемся по каждому паттерну
-            foreach ($patterns as $singlePattern) {
-                // Преобразуем паттерн с параметрами в регулярное выражение
-                $singlePattern = str_replace(['{', '}'], ['(?P<', '>[^}]+)'], $singlePattern);
-                $singlePattern = "/^" . str_replace('/', '\/', $singlePattern) . "$/";
-
-                if (preg_match($singlePattern, $cb->callback_data, $matches)) {
-                    // Извлекаем только значения параметров из совпавших данных и передаем их в функцию-обработчик
-                    $parameters = array_filter($matches, 'is_string', ARRAY_FILTER_USE_KEY);
-
-                    // Вызываем answerCallbackQuery только если паттерн совпадает
-                    $this->answerCallbackQuery($cb->callback_query_id);
-
-                    if ($deleteInlineButtons) {
-                        $this->editMessage($this->getUserId(), $this->getMessageId(), $this->getMessageText());
-                    }
-
-                    $callback(...$parameters);
-                    exit; // Завершаем выполнение скрипта после выполнения callback
-                }
-            }
-        }
-
-        return null;
-    }
-
-    /**
-     * Определяет сообщение для бота и выполняет соответствующий обработчик, если сообщение совпадает с паттерном.
-     *
-     * @param string|array $pattern Это строка или массив строк/регулярных выражений, по которым будет искать совпадение с сообщением.
-     * @param Closure $callback Функция-обработчик для выполнения, если сообщение совпадает с паттерном.
-     *
-     * @return mixed Результат выполнения функции-обработчика.
-     */
-    public function message($pattern, $callback)
-    {
-        $messageText = $this->getMessageText();
-
-        // Приводим паттерн к массиву, если это строка
-        $patterns = is_array($pattern) ? $pattern : [$pattern];
-
-        // Пробегаемся по каждому паттерну
-        foreach ($patterns as $singlePattern) {
-            // Проверяем, является ли паттерн регулярным выражением
-            $isRegex = preg_match('/^\/.*\/[a-z]*$/i', $singlePattern);
-
-            // Если это не регулярное выражение, преобразуем паттерн с параметрами в регулярное выражение
-            if (!$isRegex) {
-                $singlePattern = str_replace(['{', '}'], ['(?P<', '>[^}]+)'], $singlePattern);
-                $singlePattern = "/^" . str_replace('/', '\/', $singlePattern) . "$/";
-            }
-
-            if (preg_match($singlePattern, $messageText, $matches)) {
-                // Извлекаем только значения параметров из совпавших данных и передаем их в функцию-обработчик
-                $parameters = array_filter($matches, 'is_string', ARRAY_FILTER_USE_KEY);
-
-                // Вызываем функцию-обработчик с параметрами
-                $callback(...$parameters);
-                exit; // Завершаем выполнение скрипта после выполнения callback
-            }
-        }
-
-        return null;
-    }
-
-    /**
-     * Определяет сообщение от пользователя и выполняет ошибку.
-     *
-     * @param mixed $message Любое сообщение кроме команды.
-     * @param array|null $array Данные
-     * @param Closure $callback Функция-обработчик для выполнения, если команда совпадает.
-     *
-     * @return mixed Результат выполнения функции-обработчика.
-     */
-    public function error($message, $array, $callback)
-    {
-        $callback = $callback->bindTo($this);
-
-        if ($array === null) {
-            if ($message === $this->getMessageText()) {
-                $callback();
-            }
-        } else {
-            if ($this->findMatch($message, $array)) {
-                $callback();
-            }
-        }
-    }
-
-    /**
-     * Находит совпадение для заданного шаблона в предоставленном тексте.
-     *
-     * @param string $pattern Регулярное выражение для поиска.
-     * @param string $text Текст, в котором будет производиться поиск.
-     * @return array|null Возвращает массив совпадений, если они найдены, или null, если совпадений не найдено.
-     */
-    private function findMatch($data, $array)
-    {
-        foreach ($array as $value) {
-            if (stripos($data, $value) !== false) {
-                return false; // Найдено совпадение
-            }
-        }
-        return true; // Совпадений не найдено
-    }
-
-    /**
-     * Определяет действие для бота и выполняет соответствующий обработчик, если текст сообщения не начинается с "/".
-     *
-     * @param Closure $callback Функция-обработчик для выполнения, если текст сообщения не является командой.
-     *
-     * @return mixed Результат выполнения функции-обработчика.
-     */
-    public function anyMessage($callback)
-    {
-        if (mb_substr($this->getMessageText(), 0, 1) !== "/") {
-            return $callback();
-        }
-    }
-
-    /**
      * Аругмент любой команды.
      * 
      * @return int|string|null Результат выполнения функции-обработчика.
@@ -667,24 +469,18 @@ class Telegram
     }
 
     /**
-     * Внутренний метод, проверяет существование фотографии в сообщении и возвращает ее данные по указанному размеру.
-     *
-     * @param string $size Размер фотографии ('S', 'M' или 'L').
-     * @param string $key Ключ, по которому проверяется наличие фотографии.
-     * @return mixed Значение ключа, если фотография существует, в противном случае возвращает null.
+     * @param string $size Размер фотографии ('S', 'M' или 'L' - то есть default).
+     * @return 
      */
-    private function issetPhoto($size, $key)
+    public function getPhotoId($size = 'M')
     {
-        $set = $this->getPhoto()[$size][$key];
-        $res = isset($set) ? $set : null;
-
         switch ($size) {
-            case 0:
-                return $res;
-            case 1:
-                return $res;
-            case 2:
-                return $res;
+            case 'S':
+                return Appendix::issetPhoto($this->getPhoto(), 0, 'file_id');
+            case 'M':
+                return Appendix::issetPhoto($this->getPhoto(), 1, 'file_id');
+            case 'L':
+                return Appendix::issetPhoto($this->getPhoto(), 2, 'file_id');
         }
     }
 
@@ -694,22 +490,6 @@ class Telegram
     public function getPhoto()
     {
         return Appendix::issetKey($this->getUserProfilePhotos($this->getUserId()), 0);
-    }
-
-    /**
-     * @param string $size Размер фотографии ('S', 'M' или 'L' - то есть default).
-     * @return 
-     */
-    public function getPhotoId($size = 'M')
-    {
-        switch ($size) {
-            case 'S':
-                return $this->issetPhoto(0, 'file_id');
-            case 'M':
-                return $this->issetPhoto(1, 'file_id');
-            case 'L':
-                return $this->issetPhoto(2, 'file_id');
-        }
     }
 
     /**
