@@ -1,9 +1,6 @@
 <?php
 
-namespace Tgb\Tgb\Storage\Interface;
-
-use App\Models\Message;
-
+namespace Tgb\Storage\Interface;
 
 interface Messages
 {

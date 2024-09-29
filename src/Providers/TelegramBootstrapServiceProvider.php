@@ -1,6 +1,6 @@
 <?php
 
-namespace Tgb\Tgb\Providers;
+namespace Tgb\Providers;
 
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
 

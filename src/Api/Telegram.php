@@ -1,11 +1,11 @@
 <?php
 
-namespace Tgb\Tgb\Api;
+namespace Tgb\Api;
 
-use Tgb\Tgb\Services\Appendix;
+use Tgb\Services\Appendix;
 
-use Tgb\Tgb\Data\CallbackQuery;
-use Tgb\Tgb\Data\MessageQuery;
+use Tgb\Data\CallbackQuery;
+use Tgb\Data\MessageQuery;
 
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Request;

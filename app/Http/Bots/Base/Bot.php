@@ -2,7 +2,7 @@
 
 namespace App\Http\Bots\Base;
 
-use Tgb\Tgb\Client;
+use Tgb\Client;
 use App\Models\User;
 
 class Bot extends Client

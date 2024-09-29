@@ -1,9 +1,9 @@
 <?php
 
-namespace Tgb\Tgb\Storage;
+namespace Tgb\Storage;
 
 use Illuminate\Support\Facades\Cache;
-use Tgb\Tgb\Storage\Interface\Messages;
+use Tgb\Storage\Interface\Messages;
 
 /**
  * Класс для работы с сообщениями через Cache
@@ -20,7 +20,7 @@ class MessagesCache implements Messages
     /**
      * Конструктор класса
      *
-     * @param \Tgb\Tgb\Base\Bot $bot Экземпляр бота
+     * @param \Tgb\Base\Bot $bot Экземпляр бота
      */
     public function __construct($bot)
     {

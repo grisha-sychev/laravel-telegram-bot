@@ -1,6 +1,6 @@
 <?php
 
-namespace Tgb\Tgb\Services;
+namespace Tgb\Services;
 
 
 /**

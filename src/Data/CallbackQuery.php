@@ -1,6 +1,6 @@
 <?php
 
-namespace Tgb\Tgb\Data;
+namespace Tgb\Data;
 
 class CallbackQuery
 {

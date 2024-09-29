@@ -6,15 +6,15 @@
     "require": {},
     "autoload": {
         "psr-4": {
-            "Tgb\\Tgb\\": "src/"
+            "Tgb\\": "src/"
         }
     },
     
     "extra": {
         "laravel": {
             "providers": [
-                "Tgb\\Tgb\\Providers\\TelegramBootstrapServiceProvider",
-                "Tgb\\Tgb\\Providers\\TelegramServiceProvider"
+                "Tgb\\Providers\\TelegramBootstrapServiceProvider",
+                "Tgb\\Providers\\TelegramServiceProvider"
             ]
         }
     }

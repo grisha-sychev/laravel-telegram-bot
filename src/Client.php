@@ -1,8 +1,8 @@
 <?php
 
-namespace Tgb\Tgb;
+namespace Tgb;
 
-use Tgb\Tgb\Api\Telegram;
+use Tgb\Api\Telegram;
 
 /**
  * Класс Client
