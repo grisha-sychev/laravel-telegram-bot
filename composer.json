@@ -1,5 +1,5 @@
 {
-    "name": "telegram/bot",
+    "name": "larabot/larabot",
     "description": "Telergam bot SDK package for laravel",
     "type": "library",
     "license": "MIT",
