@@ -70,7 +70,9 @@ class Telegram
      */
     public function method($method, $query = [])
     {
-        $this->response = Http::withoutVerifying()->get("https://api.telegram.org/bot" . $this->getToken() . "/" . $method . ($query ? '?' . http_build_query($query) : ''));
+        $url = "https://api.telegram.org/bot" . $this->getToken() . "/" . $method . ($query ? '?' . http_build_query($query) : '');
+
+        $this->response = Http::withoutVerifying()->get($url);
         return $this->response;
     }
 
@@ -754,7 +756,10 @@ class Telegram
      */
     public function deleteMessage($chat_id, $message_id)
     {
-        return $this->method('deleteMessage', ["chat_id" => $chat_id, "message_id" => $message_id]);
+        return $this->method('deleteMessage', [
+            "chat_id" => $chat_id, 
+            "message_id" => $message_id
+        ]);
     }
 
     /**
@@ -807,6 +812,774 @@ class Telegram
             "send_phone_number_to_provider" => $send_phone_number_to_provider,
             "send_email_to_provider" => $send_email_to_provider,
             "is_flexible" => $is_flexible,
+        ]);
+    }
+
+    /**
+     * Получает обновления для бота.
+     *
+     * @param int|null $offset Идентификатор первого обновления, которое будет возвращено (необязательно).
+     * @param int|null $limit Ограничение на количество возвращаемых обновлений (необязательно).
+     * @param int|null $timeout Тайм-аут в секундах для долгого опроса (необязательно).
+     *
+     * @return \Illuminate\Http\Client\Response|null Ответ от Telegram API.
+     */
+    public function getUpdates($offset = null, $limit = null, $timeout = null)
+    {
+        return $this->method('getUpdates', [
+            'offset' => $offset,
+            'limit' => $limit,
+            'timeout' => $timeout,
+        ]);
+    }
+
+    /**
+     * Получает информацию о вебхуке.
+     *
+     * @return \Illuminate\Http\Client\Response|null Ответ от Telegram API.
+     */
+    public function getWebhookInfo()
+    {
+        return $this->method('getWebhookInfo');
+    }
+
+    /**
+     * Отправляет анимацию в чат.
+     *
+     * @param int $chat_id Идентификатор чата.
+     * @param string $animation Путь к анимации или URL анимации.
+     * @param string|null $caption Описание анимации (необязательно).
+     * @param int|null $duration Продолжительность анимации в секундах (необязательно).
+     * @param int|null $width Ширина анимации в пикселях (необязательно).
+     * @param int|null $height Высота анимации в пикселях (необязательно).
+     * @param bool $disable_notification Отключить уведомления о сообщении (по умолчанию false).
+     * @param int|null $reply_to_message_id Идентификатор сообщения, на которое нужно ответить (необязательно).
+     *
+     * @return \Illuminate\Http\Client\Response|null Ответ от Telegram API.
+     */
+    public function sendAnimation($chat_id, $animation, $caption = null, $duration = null, $width = null, $height = null, $disable_notification = false, $reply_to_message_id = null)
+    {
+        return $this->method('sendAnimation', [
+            'chat_id' => $chat_id,
+            'animation' => $animation,
+            'caption' => $caption,
+            'duration' => $duration,
+            'width' => $width,
+            'height' => $height,
+            'disable_notification' => $disable_notification,
+            'reply_to_message_id' => $reply_to_message_id,
+        ]);
+    }
+
+    /**
+     * Отправляет информацию о месте в чат.
+     *
+     * @param int $chat_id Идентификатор чата.
+     * @param float $latitude Широта места.
+     * @param float $longitude Долгота места.
+     * @param string $title Название места.
+     * @param string $address Адрес места.
+     * @param string|null $foursquare_id Идентификатор Foursquare (необязательно).
+     * @param string|null $foursquare_type Тип места в Foursquare (необязательно).
+     * @param bool $disable_notification Отключить уведомления о сообщении (по умолчанию false).
+     * @param int|null $reply_to_message_id Идентификатор сообщения, на которое нужно ответить (необязательно).
+     *
+     * @return \Illuminate\Http\Client\Response|null Ответ от Telegram API.
+     */
+    public function sendVenue($chat_id, $latitude, $longitude, $title, $address, $foursquare_id = null, $foursquare_type = null, $disable_notification = false, $reply_to_message_id = null)
+    {
+        return $this->method('sendVenue', [
+            'chat_id' => $chat_id,
+            'latitude' => $latitude,
+            'longitude' => $longitude,
+            'title' => $title,
+            'address' => $address,
+            'foursquare_id' => $foursquare_id,
+            'foursquare_type' => $foursquare_type,
+            'disable_notification' => $disable_notification,
+            'reply_to_message_id' => $reply_to_message_id,
+        ]);
+    }
+
+    /**
+     * Отправляет контакт в чат.
+     *
+     * @param int $chat_id Идентификатор чата.
+     * @param string $phone_number Номер телефона контакта.
+     * @param string $first_name Имя контакта.
+     * @param string|null $last_name Фамилия контакта (необязательно).
+     * @param string|null $vcard VCard контакта (необязательно).
+     * @param bool $disable_notification Отключить уведомления о сообщении (по умолчанию false).
+     * @param int|null $reply_to_message_id Идентификатор сообщения, на которое нужно ответить (необязательно).
+     *
+     * @return \Illuminate\Http\Client\Response|null Ответ от Telegram API.
+     */
+    public function sendContact($chat_id, $phone_number, $first_name, $last_name = null, $vcard = null, $disable_notification = false, $reply_to_message_id = null)
+    {
+        return $this->method('sendContact', [
+            'chat_id' => $chat_id,
+            'phone_number' => $phone_number,
+            'first_name' => $first_name,
+            'last_name' => $last_name,
+            'vcard' => $vcard,
+            'disable_notification' => $disable_notification,
+            'reply_to_message_id' => $reply_to_message_id,
+        ]);
+    }
+
+    /**
+     * Отправляет опрос в чат.
+     *
+     * @param int $chat_id Идентификатор чата.
+     * @param string $question Вопрос опроса.
+     * @param array $options Варианты ответов.
+     * @param bool $is_anonymous Анонимный опрос (по умолчанию true).
+     * @param string $type Тип опроса (по умолчанию "regular").
+     * @param bool $allows_multiple_answers Разрешить несколько ответов (по умолчанию false).
+     * @param int|null $correct_option_id Идентификатор правильного ответа (для викторин).
+     * @param string|null $explanation Объяснение правильного ответа (для викторин).
+     * @param int|null $open_period Период времени в секундах, в течение которого опрос будет активен.
+     * @param int|null $close_date Дата и время закрытия опроса в формате Unix.
+     * @param bool $disable_notification Отключить уведомления о сообщении (по умолчанию false).
+     * @param int|null $reply_to_message_id Идентификатор сообщения, на которое нужно ответить (необязательно).
+     *
+     * @return \Illuminate\Http\Client\Response|null Ответ от Telegram API.
+     */
+    public function sendPoll($chat_id, $question, $options, $is_anonymous = true, $type = 'regular', $allows_multiple_answers = false, $correct_option_id = null, $explanation = null, $open_period = null, $close_date = null, $disable_notification = false, $reply_to_message_id = null)
+    {
+        return $this->method('sendPoll', [
+            'chat_id' => $chat_id,
+            'question' => $question,
+            'options' => json_encode($options),
+            'is_anonymous' => $is_anonymous,
+            'type' => $type,
+            'allows_multiple_answers' => $allows_multiple_answers,
+            'correct_option_id' => $correct_option_id,
+            'explanation' => $explanation,
+            'open_period' => $open_period,
+            'close_date' => $close_date,
+            'disable_notification' => $disable_notification,
+            'reply_to_message_id' => $reply_to_message_id,
+        ]);
+    }
+
+    /**
+     * Отправляет кубик в чат.
+     *
+     * @param int $chat_id Идентификатор чата.
+     * @param string $emoji Эмодзи кубика (по умолчанию 🎲).
+     * @param bool $disable_notification Отключить уведомления о сообщении (по умолчанию false).
+     * @param int|null $reply_to_message_id Идентификатор сообщения, на которое нужно ответить (необязательно).
+     *
+     * @return \Illuminate\Http\Client\Response|null Ответ от Telegram API.
+     */
+    public function sendDice($chat_id, $emoji = '🎲', $disable_notification = false, $reply_to_message_id = null)
+    {
+        return $this->method('sendDice', [
+            'chat_id' => $chat_id,
+            'emoji' => $emoji,
+            'disable_notification' => $disable_notification,
+            'reply_to_message_id' => $reply_to_message_id,
+        ]);
+    }
+
+    /**
+     * Получает информацию о чате.
+     *
+     * @param int|string $chat_id Идентификатор чата или имя пользователя.
+     *
+     * @return \Illuminate\Http\Client\Response|null Ответ от Telegram API.
+     */
+    public function getChat($chat_id)
+    {
+        return $this->method('getChat', [
+            'chat_id' => $chat_id,
+        ]);
+    }
+
+    /**
+     * Получает список администраторов чата.
+     *
+     * @param int|string $chat_id Идентификатор чата или имя пользователя.
+     *
+     * @return \Illuminate\Http\Client\Response|null Ответ от Telegram API.
+     */
+    public function getChatAdministrators($chat_id)
+    {
+        return $this->method('getChatAdministrators', [
+            'chat_id' => $chat_id,
+        ]);
+    }
+
+    /**
+     * Получает информацию о члене чата.
+     *
+     * @param int|string $chat_id Идентификатор чата или имя пользователя.
+     * @param int $user_id Идентификатор пользователя.
+     *
+     * @return \Illuminate\Http\Client\Response|null Ответ от Telegram API.
+     */
+    public function getChatMember($chat_id, $user_id)
+    {
+        return $this->method('getChatMember', [
+            'chat_id' => $chat_id,
+            'user_id' => $user_id,
+        ]);
+    }
+
+    /**
+     * Получает количество участников чата.
+     *
+     * @param int|string $chat_id Идентификатор чата или имя пользователя.
+     *
+     * @return \Illuminate\Http\Client\Response|null Ответ от Telegram API.
+     */
+    public function getChatMembersCount($chat_id)
+    {
+        return $this->method('getChatMembersCount', [
+            'chat_id' => $chat_id,
+        ]);
+    }
+
+    /**
+     * Покидает чат.
+     *
+     * @param int|string $chat_id Идентификатор чата или имя пользователя.
+     *
+     * @return \Illuminate\Http\Client\Response|null Ответ от Telegram API.
+     */
+    public function leaveChat($chat_id)
+    {
+        return $this->method('leaveChat', [
+            'chat_id' => $chat_id,
+        ]);
+    }
+
+    /**
+     * Закрепляет сообщение в чате.
+     *
+     * @param int|string $chat_id Идентификатор чата или имя пользователя.
+     * @param int $message_id Идентификатор сообщения.
+     * @param bool $disable_notification Отключить уведомления о закреплении (по умолчанию false).
+     *
+     * @return \Illuminate\Http\Client\Response|null Ответ от Telegram API.
+     */
+    public function pinChatMessage($chat_id, $message_id, $disable_notification = false)
+    {
+        return $this->method('pinChatMessage', [
+            'chat_id' => $chat_id,
+            'message_id' => $message_id,
+            'disable_notification' => $disable_notification,
+        ]);
+    }
+
+    /**
+     * Открепляет сообщение в чате.
+     *
+     * @param int|string $chat_id Идентификатор чата или имя пользователя.
+     * @param int $message_id Идентификатор сообщения (необязательно).
+     *
+     * @return \Illuminate\Http\Client\Response|null Ответ от Telegram API.
+     */
+    public function unpinChatMessage($chat_id, $message_id = null)
+    {
+        return $this->method('unpinChatMessage', [
+            'chat_id' => $chat_id,
+            'message_id' => $message_id,
+        ]);
+    }
+
+    /**
+     * Открепляет все сообщения в чате.
+     *
+     * @param int|string $chat_id Идентификатор чата или имя пользователя.
+     *
+     * @return \Illuminate\Http\Client\Response|null Ответ от Telegram API.
+     */
+    public function unpinAllChatMessages($chat_id)
+    {
+        return $this->method('unpinAllChatMessages', [
+            'chat_id' => $chat_id,
+        ]);
+    }
+
+    /**
+     * Редактирует подпись сообщения.
+     *
+     * @param int|string $chat_id Идентификатор чата или имя пользователя.
+     * @param int $message_id Идентификатор сообщения.
+     * @param string $caption Новая подпись сообщения.
+     * @param string|null $parse_mode Режим парсинга (Markdown или HTML).
+     * @param array|null $reply_markup Новая разметка клавиатуры (необязательно).
+     *
+     * @return \Illuminate\Http\Client\Response|null Ответ от Telegram API.
+     */
+    public function editMessageCaption($chat_id, $message_id, $caption, $parse_mode = null, $reply_markup = null)
+    {
+        return $this->method('editMessageCaption', [
+            'chat_id' => $chat_id,
+            'message_id' => $message_id,
+            'caption' => $caption,
+            'parse_mode' => $parse_mode,
+            'reply_markup' => $reply_markup,
+        ]);
+    }
+
+    /**
+     * Редактирует медиа-сообщение.
+     *
+     * @param int|string $chat_id Идентификатор чата или имя пользователя.
+     * @param int $message_id Идентификатор сообщения.
+     * @param array $media Новое медиа-содержимое.
+     * @param array|null $reply_markup Новая разметка клавиатуры (необязательно).
+     *
+     * @return \Illuminate\Http\Client\Response|null Ответ от Telegram API.
+     */
+    public function editMessageMedia($chat_id, $message_id, $media, $reply_markup = null)
+    {
+        return $this->method('editMessageMedia', [
+            'chat_id' => $chat_id,
+            'message_id' => $message_id,
+            'media' => $media,
+            'reply_markup' => $reply_markup,
+        ]);
+    }
+
+    /**
+     * Редактирует разметку клавиатуры сообщения.
+     *
+     * @param int|string $chat_id Идентификатор чата или имя пользователя.
+     * @param int $message_id Идентификатор сообщения.
+     * @param array|null $reply_markup Новая разметка клавиатуры (необязательно).
+     *
+     * @return \Illuminate\Http\Client\Response|null Ответ от Telegram API.
+     */
+    public function editMessageReplyMarkup($chat_id, $message_id, $reply_markup = null)
+    {
+        return $this->method('editMessageReplyMarkup', [
+            'chat_id' => $chat_id,
+            'message_id' => $message_id,
+            'reply_markup' => $reply_markup,
+        ]);
+    }
+
+    /**
+     * Останавливает опрос.
+     *
+     * @param int|string $chat_id Идентификатор чата или имя пользователя.
+     * @param int $message_id Идентификатор сообщения с опросом.
+     * @param array|null $reply_markup Новая разметка клавиатуры (необязательно).
+     *
+     * @return \Illuminate\Http\Client\Response|null Ответ от Telegram API.
+     */
+    public function stopPoll($chat_id, $message_id, $reply_markup = null)
+    {
+        return $this->method('stopPoll', [
+            'chat_id' => $chat_id,
+            'message_id' => $message_id,
+            'reply_markup' => $reply_markup,
+        ]);
+    }
+
+    /**
+     * Удаляет фотографию чата.
+     *
+     * @param int|string $chat_id Идентификатор чата или имя пользователя.
+     *
+     * @return \Illuminate\Http\Client\Response|null Ответ от Telegram API.
+     */
+    public function deleteChatPhoto($chat_id)
+    {
+        return $this->method('deleteChatPhoto', [
+            'chat_id' => $chat_id,
+        ]);
+    }
+
+    /**
+     * Устанавливает название чата.
+     *
+     * @param int|string $chat_id Идентификатор чата или имя пользователя.
+     * @param string $title Новое название чата.
+     *
+     * @return \Illuminate\Http\Client\Response|null Ответ от Telegram API.
+     */
+    public function setChatTitle($chat_id, $title)
+    {
+        return $this->method('setChatTitle', [
+            'chat_id' => $chat_id,
+            'title' => $title,
+        ]);
+    }
+
+    /**
+     * Устанавливает описание чата.
+     *
+     * @param int|string $chat_id Идентификатор чата или имя пользователя.
+     * @param string $description Новое описание чата.
+     *
+     * @return \Illuminate\Http\Client\Response|null Ответ от Telegram API.
+     */
+    public function setChatDescription($chat_id, $description)
+    {
+        return $this->method('setChatDescription', [
+            'chat_id' => $chat_id,
+            'description' => $description,
+        ]);
+    }
+
+    /**
+     * Устанавливает фотографию чата.
+     *
+     * @param int|string $chat_id Идентификатор чата или имя пользователя.
+     * @param string $photo Путь к фотографии или URL изображения.
+     *
+     * @return \Illuminate\Http\Client\Response|null Ответ от Telegram API.
+     */
+    public function setChatPhoto($chat_id, $photo)
+    {
+        return $this->method('setChatPhoto', [
+            'chat_id' => $chat_id,
+            'photo' => $photo,
+        ]);
+    }
+
+    /**
+     * Устанавливает разрешения чата.
+     *
+     * @param int|string $chat_id Идентификатор чата или имя пользователя.
+     * @param array $permissions Новые разрешения чата.
+     *
+     * @return \Illuminate\Http\Client\Response|null Ответ от Telegram API.
+     */
+    public function setChatPermissions($chat_id, $permissions)
+    {
+        return $this->method('setChatPermissions', [
+            'chat_id' => $chat_id,
+            'permissions' => $permissions,
+        ]);
+    }
+
+    /**
+     * Экспортирует ссылку на приглашение в чат.
+     *
+     * @param int|string $chat_id Идентификатор чата или имя пользователя.
+     *
+     * @return \Illuminate\Http\Client\Response|null Ответ от Telegram API.
+     */
+    public function exportChatInviteLink($chat_id)
+    {
+        return $this->method('exportChatInviteLink', [
+            'chat_id' => $chat_id,
+        ]);
+    }
+
+    /**
+     * Создает ссылку на приглашение в чат.
+     *
+     * @param int|string $chat_id Идентификатор чата или имя пользователя.
+     * @param string|null $name Название ссылки на приглашение (необязательно).
+     * @param int|null $expire_date Дата истечения срока действия ссылки в формате Unix (необязательно).
+     * @param int|null $member_limit Максимальное количество участников, которые могут присоединиться по этой ссылке (необязательно).
+     * @param bool $creates_join_request Требуется ли одобрение запроса на присоединение (по умолчанию false).
+     *
+     * @return \Illuminate\Http\Client\Response|null Ответ от Telegram API.
+     */
+    public function createChatInviteLink($chat_id, $name = null, $expire_date = null, $member_limit = null, $creates_join_request = false)
+    {
+        return $this->method('createChatInviteLink', [
+            'chat_id' => $chat_id,
+            'name' => $name,
+            'expire_date' => $expire_date,
+            'member_limit' => $member_limit,
+            'creates_join_request' => $creates_join_request,
+        ]);
+    }
+
+    /**
+     * Редактирует ссылку на приглашение в чат.
+     *
+     * @param int|string $chat_id Идентификатор чата или имя пользователя.
+     * @param string $invite_link Ссылка на приглашение, которую нужно отредактировать.
+     * @param string|null $name Новое название ссылки на приглашение (необязательно).
+     * @param int|null $expire_date Новая дата истечения срока действия ссылки в формате Unix (необязательно).
+     * @param int|null $member_limit Новое максимальное количество участников, которые могут присоединиться по этой ссылке (необязательно).
+     * @param bool $creates_join_request Требуется ли одобрение запроса на присоединение (по умолчанию false).
+     *
+     * @return \Illuminate\Http\Client\Response|null Ответ от Telegram API.
+     */
+    public function editChatInviteLink($chat_id, $invite_link, $name = null, $expire_date = null, $member_limit = null, $creates_join_request = false)
+    {
+        return $this->method('editChatInviteLink', [
+            'chat_id' => $chat_id,
+            'invite_link' => $invite_link,
+            'name' => $name,
+            'expire_date' => $expire_date,
+            'member_limit' => $member_limit,
+            'creates_join_request' => $creates_join_request,
+        ]);
+    }
+
+    /**
+     * Отзывает ссылку на приглашение в чат.
+     *
+     * @param int|string $chat_id Идентификатор чата или имя пользователя.
+     * @param string $invite_link Ссылка на приглашение, которую нужно отозвать.
+     *
+     * @return \Illuminate\Http\Client\Response|null Ответ от Telegram API.
+     */
+    public function revokeChatInviteLink($chat_id, $invite_link)
+    {
+        return $this->method('revokeChatInviteLink', [
+            'chat_id' => $chat_id,
+            'invite_link' => $invite_link,
+        ]);
+    }
+
+    /**
+     * Одобряет запрос на присоединение к чату.
+     *
+     * @param int|string $chat_id Идентификатор чата или имя пользователя.
+     * @param int $user_id Идентификатор пользователя, запрос которого нужно одобрить.
+     *
+     * @return \Illuminate\Http\Client\Response|null Ответ от Telegram API.
+     */
+    public function approveChatJoinRequest($chat_id, $user_id)
+    {
+        return $this->method('approveChatJoinRequest', [
+            'chat_id' => $chat_id,
+            'user_id' => $user_id,
+        ]);
+    }
+
+    /**
+     * Отклоняет запрос на присоединение к чату.
+     *
+     * @param int|string $chat_id Идентификатор чата или имя пользователя.
+     * @param int $user_id Идентификатор пользователя, запрос которого нужно отклонить.
+     *
+     * @return \Illuminate\Http\Client\Response|null Ответ от Telegram API.
+     */
+    public function declineChatJoinRequest($chat_id, $user_id)
+    {
+        return $this->method('declineChatJoinRequest', [
+            'chat_id' => $chat_id,
+            'user_id' => $user_id,
+        ]);
+    }
+
+    /**
+     * Банит участника чата.
+     *
+     * @param int|string $chat_id Идентификатор чата или имя пользователя.
+     * @param int $user_id Идентификатор пользователя.
+     * @param int|null $until_date Дата и время окончания бана в формате Unix (необязательно).
+     *
+     * @return \Illuminate\Http\Client\Response|null Ответ от Telegram API.
+     */
+    public function banChatMember($chat_id, $user_id, $until_date = null)
+    {
+        return $this->method('banChatMember', [
+            'chat_id' => $chat_id,
+            'user_id' => $user_id,
+            'until_date' => $until_date,
+        ]);
+    }
+
+    /**
+     * Разбанивает участника чата.
+     *
+     * @param int|string $chat_id Идентификатор чата или имя пользователя.
+     * @param int $user_id Идентификатор пользователя.
+     *
+     * @return \Illuminate\Http\Client\Response|null Ответ от Telegram API.
+     */
+    public function unbanChatMember($chat_id, $user_id)
+    {
+        return $this->method('unbanChatMember', [
+            'chat_id' => $chat_id,
+            'user_id' => $user_id,
+        ]);
+    }
+
+    /**
+     * Ограничивает права участника чата.
+     *
+     * @param int|string $chat_id Идентификатор чата или имя пользователя.
+     * @param int $user_id Идентификатор пользователя.
+     * @param array $permissions Новые разрешения участника.
+     * @param int|null $until_date Дата и время окончания ограничений в формате Unix (необязательно).
+     *
+     * @return \Illuminate\Http\Client\Response|null Ответ от Telegram API.
+     */
+    public function restrictChatMember($chat_id, $user_id, $permissions, $until_date = null)
+    {
+        return $this->method('restrictChatMember', [
+            'chat_id' => $chat_id,
+            'user_id' => $user_id,
+            'permissions' => $permissions,
+            'until_date' => $until_date,
+        ]);
+    }
+
+    /**
+     * Повышает участника чата до администратора.
+     *
+     * @param int|string $chat_id Идентификатор чата или имя пользователя.
+     * @param int $user_id Идентификатор пользователя.
+     * @param array $permissions Новые разрешения администратора.
+     *
+     * @return \Illuminate\Http\Client\Response|null Ответ от Telegram API.
+     */
+    public function promoteChatMember($chat_id, $user_id, $permissions)
+    {
+        return $this->method('promoteChatMember', [
+            'chat_id' => $chat_id,
+            'user_id' => $user_id,
+            'permissions' => $permissions,
+        ]);
+    }
+
+    /**
+     * Устанавливает пользовательский заголовок администратора чата.
+     *
+     * @param int|string $chat_id Идентификатор чата или имя пользователя.
+     * @param int $user_id Идентификатор пользователя.
+     * @param string $custom_title Новый пользовательский заголовок.
+     *
+     * @return \Illuminate\Http\Client\Response|null Ответ от Telegram API.
+     */
+    public function setChatAdministratorCustomTitle($chat_id, $user_id, $custom_title)
+    {
+        return $this->method('setChatAdministratorCustomTitle', [
+            'chat_id' => $chat_id,
+            'user_id' => $user_id,
+            'custom_title' => $custom_title,
+        ]);
+    }
+
+    /**
+     * Банит отправителя сообщений в чате.
+     *
+     * @param int|string $chat_id Идентификатор чата или имя пользователя.
+     * @param int $sender_chat_id Идентификатор отправителя сообщений.
+     *
+     * @return \Illuminate\Http\Client\Response|null Ответ от Telegram API.
+     */
+    public function banChatSenderChat($chat_id, $sender_chat_id)
+    {
+        return $this->method('banChatSenderChat', [
+            'chat_id' => $chat_id,
+            'sender_chat_id' => $sender_chat_id,
+        ]);
+    }
+
+    /**
+     * Разбанивает отправителя сообщений в чате.
+     *
+     * @param int|string $chat_id Идентификатор чата или имя пользователя.
+     * @param int $sender_chat_id Идентификатор отправителя сообщений.
+     *
+     * @return \Illuminate\Http\Client\Response|null Ответ от Telegram API.
+     */
+    public function unbanChatSenderChat($chat_id, $sender_chat_id)
+    {
+        return $this->method('unbanChatSenderChat', [
+            'chat_id' => $chat_id,
+            'sender_chat_id' => $sender_chat_id,
+        ]);
+    }
+
+    /**
+     * Устанавливает команды бота.
+     *
+     * @param array $commands Массив команд.
+     *
+     * @return \Illuminate\Http\Client\Response|null Ответ от Telegram API.
+     */
+    public function setMyCommands($commands)
+    {
+        return $this->method('setMyCommands', [
+            'commands' => json_encode($commands),
+        ]);
+    }
+
+    /**
+     * Удаляет команды бота.
+     *
+     * @return \Illuminate\Http\Client\Response|null Ответ от Telegram API.
+     */
+    public function deleteMyCommands()
+    {
+        return $this->method('deleteMyCommands');
+    }
+
+    /**
+     * Получает команды бота.
+     *
+     * @return \Illuminate\Http\Client\Response|null Ответ от Telegram API.
+     */
+    public function getMyCommands()
+    {
+        return $this->method('getMyCommands');
+    }
+
+    /**
+     * Устанавливает кнопку меню чата.
+     *
+     * @param int|string $chat_id Идентификатор чата или имя пользователя.
+     * @param array $menu_button Кнопка меню чата.
+     *
+     * @return \Illuminate\Http\Client\Response|null Ответ от Telegram API.
+     */
+    public function setChatMenuButton($chat_id, $menu_button)
+    {
+        return $this->method('setChatMenuButton', [
+            'chat_id' => $chat_id,
+            'menu_button' => $menu_button,
+        ]);
+    }
+
+    /**
+     * Получает кнопку меню чата.
+     *
+     * @param int|string $chat_id Идентификатор чата или имя пользователя.
+     *
+     * @return \Illuminate\Http\Client\Response|null Ответ от Telegram API.
+     */
+    public function getChatMenuButton($chat_id)
+    {
+        return $this->method('getChatMenuButton', [
+            'chat_id' => $chat_id,
+        ]);
+    }
+
+    /**
+     * Устанавливает права администратора по умолчанию.
+     *
+     * @param array $rights Права администратора.
+     * @param bool $for_channels Устанавливать права для каналов (по умолчанию false).
+     *
+     * @return \Illuminate\Http\Client\Response|null Ответ от Telegram API.
+     */
+    public function setMyDefaultAdministratorRights($rights, $for_channels = false)
+    {
+        return $this->method('setMyDefaultAdministratorRights', [
+            'rights' => $rights,
+            'for_channels' => $for_channels,
+        ]);
+    }
+
+    /**
+     * Получает права администратора по умолчанию.
+     *
+     * @param bool $for_channels Получать права для каналов (по умолчанию false).
+     *
+     * @return \Illuminate\Http\Client\Response|null Ответ от Telegram API.
+     */
+    public function getMyDefaultAdministratorRights($for_channels = false)
+    {
+        return $this->method('getMyDefaultAdministratorRights', [
+            'for_channels' => $for_channels,
         ]);
     }
 }
