@@ -68,4 +68,18 @@ class Appendix
                 return $res;
         }
     }
+
+        /**
+     * Извлекает аргументы из текста команды.
+     *
+     * @param string $text Текст команды.
+     *
+     * @return array Массив аргументов.
+     */
+    public static function getArguments($text)
+    {
+        $parts = explode(' ', $text);
+        array_shift($parts); // Удаляем первую часть, так как это команда
+        return $parts;
+    }
 }

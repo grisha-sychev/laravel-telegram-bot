@@ -12,7 +12,7 @@ use Tgb\Services\Appendix;
  * Он включает методы для отправки сообщений, обработки обновлений и другие
  * полезные функции для взаимодействия с ботом.
  * 
- * @package Tgb\Tgb
+ * @package Tgb
  */
 
 class Client extends Telegram
@@ -229,18 +229,20 @@ class Client extends Telegram
 
         // Проверка для текста сообщения
         foreach ($commands as $cmd) {
-            if ($cmd === Appendix::firstword($messageText)) {
-                $arguments = $this->getArguments($messageText);
-                $callback($arguments);
+            if (strpos($messageText, $cmd) === 0) {
+                $arguments = Appendix::getArguments($messageText);
+                $callback($arguments); // Завершаем выполнение после нахождения совпадения
+                return;
             }
         }
 
         // Проверка для callback данных
         if ($cb && is_object($cb)) {
             foreach ($commands as $cmd) {
-                if ($cmd === "/" . $cb->callback_data) { // сравниваем с callback_data
-                    $arguments = $this->getArguments($cb->callback_data);
-                    $callback($arguments);
+                if (strpos($cb->callback_data, $cmd) === 0) { // сравниваем с callback_data
+                    $arguments = Appendix::getArguments($cb->callback_data);
+                    $callback($arguments); // Завершаем выполнение после нахождения совпадения
+                    return;
                 }
             }
         }
@@ -384,20 +386,6 @@ class Client extends Telegram
             }
         }
         return true; // Совпадений не найдено
-    }
-
-    /**
-     * Извлекает аргументы из текста команды.
-     *
-     * @param string $text Текст команды.
-     *
-     * @return array Массив аргументов.
-     */
-    private function getArguments($text)
-    {
-        $parts = explode(' ', $text);
-        array_shift($parts); // Удаляем первую часть, так как это команда
-        return $parts;
     }
 
     /**
