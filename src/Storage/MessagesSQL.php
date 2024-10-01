@@ -42,8 +42,8 @@ class MessagesSQL implements Messages
 
         $cb = $this->bot->getCallbackData();
 
-        // Проверяем, что это не callback и сообщение не пусто
-        if (!empty($cb) && empty($messageText)) {
+        // Проверяем, что это не callback или сообщение не пусто
+        if($cb || empty($messageText)) {
             return null;
         }
 

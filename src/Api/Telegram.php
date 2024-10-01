@@ -9,6 +9,7 @@ use Tgb\Data\MessageQuery;
 
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Request;
+use Tgb\Data\PreCheckoutQuery;
 
 /**
  * Класс Api Client для управления Telegram ботом.
@@ -21,9 +22,9 @@ class Telegram
     private ?\Illuminate\Http\Client\Response $response = null;
 
     /**
-     * @var CallbackQuery|MessageQuery|null $user Информация о пользователе, которая может быть либо CallbackQuery, либо MessageQuery, или null, если не установлена.
+     * @var CallbackQuery|MessageQuery|PreCheckoutQuery|null $user Информация о пользователе, которая может быть либо CallbackQuery, либо MessageQuery, или null, если не установлена.
      */
-    private CallbackQuery|MessageQuery|null $user = null;
+    private CallbackQuery|MessageQuery|PreCheckoutQuery|null $user = null;
 
     /**
      * @var string|null $bot Идентификатор бота.
@@ -107,10 +108,13 @@ class Telegram
     {
         $all = Request::json()->all();
 
-        if (isset($all['callback_query'])) {
-            return new CallbackQuery($all);
-        } else {
-            return new MessageQuery($all);
+        switch (true) {
+            case isset($all['callback_query']):
+                return new CallbackQuery($all);
+            case isset($all['pre_checkout_query']):
+                return new PreCheckoutQuery($all);
+            default:
+                return new MessageQuery($all);
         }
     }
 
@@ -274,7 +278,7 @@ class Telegram
     /**
      * Получает данные о пользователе из запроса.
      *
-     * @return CallbackQuery|MessageQuery
+     * @return CallbackQuery|MessageQuery|PreCheckoutQuery
      */
     public function user()
     {
@@ -389,7 +393,11 @@ class Telegram
      */
     public function getMessageText()
     {
-        return $this->getUser()->getMessageText();
+        $user = $this->getUser();
+        if (method_exists($user, 'getMessageText')) {
+            return $user->getMessageText();
+        }
+        return null;
     }
 
     /**
@@ -449,6 +457,22 @@ class Telegram
             'username' => $this->getUser()->getChatUsername(),
         ];
     }
+
+    /**
+     * Получает данные о предварительном запросе на оплату.
+     *
+     * @return PreCheckoutQuery|null
+     */
+    public function getPreCheckoutData()
+    {
+        $request = $this->request();
+        if ($request && method_exists($request, 'getPreCheckoutQuery')) {
+            return $request->getPreCheckoutQuery();
+        }
+        return null;
+    }
+
+
 
     /**
      * Получает данные о колбеке (если доступно).
@@ -517,7 +541,7 @@ class Telegram
     /**
      * Получает объект пользователя.
      *
-     * @return CallbackQuery|MessageQuery
+     * @return CallbackQuery|MessageQuery|PreCheckoutQuery
      */
     protected function getUser()
     {
@@ -531,7 +555,7 @@ class Telegram
     /**
      * Устанавливает объект пользователя.
      *
-     * @param CallbackQuery|MessageQuery $user
+     * @param CallbackQuery|MessageQuery|PreCheckoutQuery $user
      */
     protected function setUser($user)
     {
@@ -733,6 +757,29 @@ class Telegram
     }
 
     /**
+     * Отвечает на pre-checkout query.
+     *
+     * @param string $pre_checkout_query_id Уникальный идентификатор pre-checkout query.
+     * @param bool $ok Укажите True, если все в порядке (товары доступны и т.д.) и бот готов продолжить выполнение заказа. Укажите False, если есть какие-либо проблемы.
+     * @param string|null $error_message Сообщение об ошибке в читаемом виде, объясняющее причину невозможности продолжить оформление заказа (обязательно, если ok равно False).
+     *
+     * @return bool True в случае успеха.
+     */
+    public function answerPreCheckoutQuery($pre_checkout_query_id, $ok, $error_message = null)
+    {
+        $params = [
+            'pre_checkout_query_id' => $pre_checkout_query_id,
+            'ok' => $ok,
+        ];
+
+        if (!$ok && $error_message) {
+            $params['error_message'] = $error_message;
+        }
+
+        return $this->method('answerPreCheckoutQuery', $params)->successful();
+    }
+
+    /**
      * Отправляет информацию о действии в чате.
      *
      * @param int $chat_id Идентификатор чата.
@@ -757,7 +804,7 @@ class Telegram
     public function deleteMessage($chat_id, $message_id)
     {
         return $this->method('deleteMessage', [
-            "chat_id" => $chat_id, 
+            "chat_id" => $chat_id,
             "message_id" => $message_id
         ]);
     }
@@ -765,42 +812,77 @@ class Telegram
     /**
      * Отправляет счет на оплату в чат.
      *
-     * @param int $chat_id Идентификатор чата.
-     * @param string $title Название продукта.
-     * @param string $description Описание продукта.
-     * @param string $payload Полезная нагрузка, которая будет передана в callback.
-     * @param string $provider_token Токен провайдера платежей.
-     * @param string $start_parameter Параметр для глубоких ссылок.
-     * @param string $currency Валюта (например, "USD").
-     * @param array $prices Массив цен (каждый элемент - это массив с ключами 'label' и 'amount').
-     * @param int|null $reply_to_message_id Идентификатор сообщения, на которое нужно ответить (необязательно).
-     * @param bool $disable_notification Отключить уведомления о сообщении (по умолчанию false).
-     * @param string|null $photo_url URL фотографии продукта (необязательно).
-     * @param int|null $photo_size Размер фотографии продукта (необязательно).
-     * @param int|null $photo_width Ширина фотографии продукта (необязательно).
-     * @param int|null $photo_height Высота фотографии продукта (необязательно).
-     * @param bool $need_name Требуется ли имя пользователя (по умолчанию false).
-     * @param bool $need_phone_number Требуется ли номер телефона пользователя (по умолчанию false).
-     * @param bool $need_email Требуется ли email пользователя (по умолчанию false).
-     * @param bool $need_shipping_address Требуется ли адрес доставки (по умолчанию false).
-     * @param bool $send_phone_number_to_provider Отправить ли номер телефона провайдеру (по умолчанию false).
-     * @param bool $send_email_to_provider Отправить ли email провайдеру (по умолчанию false).
-     * @param bool $is_flexible Гибкие цены (по умолчанию false).
+     * @param int|string $chat_id Уникальный идентификатор целевого чата или имя пользователя целевого канала (в формате @channelusername).
+     * @param string $title Название продукта, 1-32 символов.
+     * @param string $description Описание продукта, 1-255 символов.
+     * @param string $payload Полезная нагрузка, определенная ботом, 1-128 байт. Это не будет отображаться пользователю, используйте это для ваших внутренних процессов.
+     * @param string $provider_token Токен провайдера платежей, полученный через @BotFather. Передайте пустую строку для платежей в Telegram Stars.
+     * @param string $currency Трехбуквенный код валюты ISO 4217. Передайте "XTR" для платежей в Telegram Stars.
+     * @param array $prices Разбивка цен, JSON-сериализованный список компонентов (например, цена продукта, налог, скидка, стоимость доставки, налог на доставку, бонус и т.д.). Должен содержать ровно один элемент для платежей в Telegram Stars.
+     * @param int|null $max_tip_amount Максимально допустимая сумма чаевых в наименьших единицах валюты (целое число, не float/double). По умолчанию 0. Не поддерживается для платежей в Telegram Stars.
+     * @param array|null $suggested_tip_amounts JSON-сериализованный массив предложенных сумм чаевых в наименьших единицах валюты (целое число, не float/double). Максимум 4 предложенные суммы чаевых.
+     * @param string|null $start_parameter Уникальный параметр глубоких ссылок.
+     * @param string|null $provider_data JSON-сериализованные данные о счете, которые будут переданы провайдеру платежей.
+     * @param string|null $photo_url URL фотографии продукта для счета.
+     * @param int|null $photo_size Размер фотографии в байтах.
+     * @param int|null $photo_width Ширина фотографии.
+     * @param int|null $photo_height Высота фотографии.
+     * @param bool $need_name Требуется ли полное имя пользователя для завершения заказа.
+     * @param bool $need_phone_number Требуется ли номер телефона пользователя для завершения заказа.
+     * @param bool $need_email Требуется ли email пользователя для завершения заказа.
+     * @param bool $need_shipping_address Требуется ли адрес доставки.
+     * @param bool $send_phone_number_to_provider Отправить ли номер телефона пользователя провайдеру.
+     * @param bool $send_email_to_provider Отправить ли email пользователя провайдеру.
+     * @param bool $is_flexible Гибкие цены.
+     * @param bool $disable_notification Отправить сообщение без звука.
+     * @param bool $protect_content Защитить содержимое отправленного сообщения от пересылки и сохранения.
+     * @param string|null $message_effect_id Уникальный идентификатор эффекта сообщения, который будет добавлен к сообщению; только для личных чатов.
+     * @param array|null $reply_parameters Описание сообщения, на которое нужно ответить.
+     * @param array|null $reply_markup JSON-сериализованный объект для встроенной клавиатуры. Если пусто, будет показана одна кнопка "Оплатить общую сумму". Если не пусто, первая кнопка должна быть кнопкой оплаты.
      *
+     * @return \Illuminate\Http\Client\Response|null Ответ от Telegram API.
      */
-    public function sendInvoice($chat_id, $title, $description, $payload, $provider_token, $start_parameter, $currency, $prices, $reply_to_message_id = null, $disable_notification = false, $photo_url = null, $photo_size = null, $photo_width = null, $photo_height = null, $need_name = false, $need_phone_number = false, $need_email = false, $need_shipping_address = false, $send_phone_number_to_provider = false, $send_email_to_provider = false, $is_flexible = false)
-    {
+    public function sendInvoice(
+        $chat_id,
+        $title,
+        $description,
+        $payload,
+        $provider_token,
+        $currency,
+        $prices,
+        $max_tip_amount = null,
+        $suggested_tip_amounts = null,
+        $start_parameter = null,
+        $provider_data = null,
+        $photo_url = null,
+        $photo_size = null,
+        $photo_width = null,
+        $photo_height = null,
+        $need_name = false,
+        $need_phone_number = false,
+        $need_email = false,
+        $need_shipping_address = false,
+        $send_phone_number_to_provider = false,
+        $send_email_to_provider = false,
+        $is_flexible = false,
+        $disable_notification = false,
+        $protect_content = false,
+        $message_effect_id = null,
+        $reply_parameters = null,
+        $reply_markup = null
+    ) {
         return $this->method('sendInvoice', [
             "chat_id" => $chat_id,
             "title" => $title,
             "description" => $description,
             "payload" => $payload,
             "provider_token" => $provider_token,
-            "start_parameter" => $start_parameter,
             "currency" => $currency,
             "prices" => $prices,
-            "reply_to_message_id" => $reply_to_message_id,
-            "disable_notification" => $disable_notification,
+            "max_tip_amount" => $max_tip_amount,
+            "suggested_tip_amounts" => $suggested_tip_amounts,
+            "start_parameter" => $start_parameter,
+            "provider_data" => $provider_data,
             "photo_url" => $photo_url,
             "photo_size" => $photo_size,
             "photo_width" => $photo_width,
@@ -812,6 +894,11 @@ class Telegram
             "send_phone_number_to_provider" => $send_phone_number_to_provider,
             "send_email_to_provider" => $send_email_to_provider,
             "is_flexible" => $is_flexible,
+            "disable_notification" => $disable_notification,
+            "protect_content" => $protect_content,
+            "message_effect_id" => $message_effect_id,
+            "reply_parameters" => $reply_parameters,
+            "reply_markup" => $reply_markup,
         ]);
     }
 

@@ -146,28 +146,88 @@ class Client extends Telegram
      * @param string $description Описание счета.
      * @param string $payload Полезная нагрузка счета.
      * @param string $provider_token Токен провайдера.
-     * @param string $start_parameter Параметр запуска.
      * @param string $currency Валюта счета.
      * @param array $prices Массив цен.
-     * @param int|null $reply_to_message_id ID сообщения, на которое нужно ответить (необязательно).
-     * @param bool $disable_notification Отключить уведомления (по умолчанию false).
-     * @param string|null $photo_url URL фотографии (необязательно).
-     * @param int|null $photo_size Размер фотографии (необязательно).
-     * @param int|null $photo_width Ширина фотографии (необязательно).
-     * @param int|null $photo_height Высота фотографии (необязательно).
-     * @param bool $need_name Требуется ли имя (по умолчанию false).
-     * @param bool $need_phone_number Требуется ли номер телефона (по умолчанию false).
-     * @param bool $need_email Требуется ли email (по умолчанию false).
-     * @param bool $need_shipping_address Требуется ли адрес доставки (по умолчанию false).
-     * @param bool $send_phone_number_to_provider Отправить ли номер телефона провайдеру (по умолчанию false).
-     * @param bool $send_email_to_provider Отправить ли email провайдеру (по умолчанию false).
-     * @param bool $is_flexible Гибкий ли счет (по умолчанию false).
+     * @param int|null $max_tip_amount Максимально допустимая сумма чаевых в наименьших единицах валюты (целое число, не float/double). По умолчанию 0.
+     * @param array|null $suggested_tip_amounts JSON-сериализованный массив предложенных сумм чаевых в наименьших единицах валюты (целое число, не float/double). Максимум 4 предложенные суммы чаевых.
+     * @param string|null $start_parameter Параметр запуска.
+     * @param string|null $provider_data JSON-сериализованные данные о счете, которые будут переданы провайдеру платежей.
+     * @param string|null $photo_url URL фотографии продукта для счета.
+     * @param int|null $photo_size Размер фотографии в байтах.
+     * @param int|null $photo_width Ширина фотографии.
+     * @param int|null $photo_height Высота фотографии.
+     * @param bool $need_name Требуется ли имя.
+     * @param bool $need_phone_number Требуется ли номер телефона.
+     * @param bool $need_email Требуется ли email.
+     * @param bool $need_shipping_address Требуется ли адрес доставки.
+     * @param bool $send_phone_number_to_provider Отправить ли номер телефона провайдеру.
+     * @param bool $send_email_to_provider Отправить ли email провайдеру.
+     * @param bool $is_flexible Гибкий ли счет.
+     * @param bool $disable_notification Отключить уведомления.
+     * @param bool $protect_content Защитить содержимое отправленного сообщения от пересылки и сохранения.
+     * @param string|null $message_effect_id Уникальный идентификатор эффекта сообщения, который будет добавлен к сообщению; только для личных чатов.
+     * @param array|null $reply_parameters Описание сообщения, на которое нужно ответить.
+     * @param array|null $reply_markup JSON-сериализованный объект для встроенной клавиатуры.
      *
-     * @return mixed Результат отправки счета.
+     * @return \Illuminate\Http\Client\Response|null Ответ от Telegram API.
      */
-    public function sendInvoiceSelf($title, $description, $payload, $provider_token, $start_parameter, $currency, $prices, $reply_to_message_id = null, $disable_notification = false, $photo_url = null, $photo_size = null, $photo_width = null, $photo_height = null, $need_name = false, $need_phone_number = false, $need_email = false, $need_shipping_address = false, $send_phone_number_to_provider = false, $send_email_to_provider = false, $is_flexible = false)
-    {
-        return $this->sendInvoice($this->getUserId(), $title, $description, $payload, $provider_token, $start_parameter, $currency, $prices, $reply_to_message_id, $disable_notification, $photo_url, $photo_size, $photo_width, $photo_height, $need_name, $need_phone_number, $need_email, $need_shipping_address, $send_phone_number_to_provider, $send_email_to_provider, $is_flexible);
+    public function sendInvoiceSelf(
+        $title,
+        $description,
+        $payload,
+        $provider_token,
+        $currency,
+        $prices,
+        $max_tip_amount = null,
+        $suggested_tip_amounts = null,
+        $start_parameter = null,
+        $provider_data = null,
+        $photo_url = null,
+        $photo_size = null,
+        $photo_width = null,
+        $photo_height = null,
+        $need_name = false,
+        $need_phone_number = false,
+        $need_email = false,
+        $need_shipping_address = false,
+        $send_phone_number_to_provider = false,
+        $send_email_to_provider = false,
+        $is_flexible = false,
+        $disable_notification = false,
+        $protect_content = false,
+        $message_effect_id = null,
+        $reply_parameters = null,
+        $reply_markup = null
+    ) {
+        return $this->sendInvoice(
+            $this->getUserId(),
+            $title,
+            $description,
+            $payload,
+            $provider_token,
+            $currency,
+            $prices,
+            $max_tip_amount,
+            $suggested_tip_amounts,
+            $start_parameter,
+            $provider_data,
+            $photo_url,
+            $photo_size,
+            $photo_width,
+            $photo_height,
+            $need_name,
+            $need_phone_number,
+            $need_email,
+            $need_shipping_address,
+            $send_phone_number_to_provider,
+            $send_email_to_provider,
+            $is_flexible,
+            $disable_notification,
+            $protect_content,
+            $message_effect_id,
+            $reply_parameters,
+            $reply_markup
+        );
     }
 
     /**
@@ -248,6 +308,38 @@ class Client extends Telegram
         }
 
         return null;
+    }
+
+    /**
+     * Определяет обработчик для события pre-checkout.
+     *
+     * @param Closure $callback Функция-обработчик для выполнения, если событие pre-checkout происходит.
+     *
+     * @return mixed Результат выполнения функции-обработчика.
+     */
+    public function preCheckout($callback)
+    {
+        $preCheckoutQuery = $this->getPreCheckoutData();
+
+        if ($preCheckoutQuery !== null) {
+            $callback = $callback->bindTo($this, $this);
+            return $callback((object) $preCheckoutQuery);
+        }
+
+        return null;
+    }
+
+    /**
+     * Обрабатывает запрос pre-checkout и автоматически подтверждает его.
+     *
+     * @param bool $ok Указывает, следует ли подтвердить запрос pre-checkout (по умолчанию: true).
+     * @param string|null $error_message Сообщение об ошибке в читаемом виде, объясняющее причину невозможности продолжить оформление заказа (обязательно, если ok равно False).
+     * @return mixed Результат выполнения функции-обработчика.
+     */
+    public function preCheckoutOk($ok = true, $error_message = null)
+    {
+        $data = (object) $this->getPreCheckoutData();
+        return $this->answerPreCheckoutQuery(isset($data->id) ? $data->id : null, $ok, $error_message);
     }
 
     /**
