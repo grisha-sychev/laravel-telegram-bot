@@ -6,7 +6,7 @@ use Tgb\Api\Telegram;
 use Illuminate\Support\Facades\Artisan;
 
 // Сначала записывает имя и токен в конфиг tgb, далее делает регистрацию бота
-Artisan::command("tgb:new {name} {token} {domain}", function () {
+Artisan::command("tgb:new {name} {token} {domain=null}", function () {
   $name = $this->argument('name');
   $token = $this->argument('token');
   $domain = $this->argument('domain');
@@ -29,7 +29,7 @@ Artisan::command("tgb:new {name} {token} {domain}", function () {
   // Регистрируем бота
   $client = new Telegram();
   $client->bot = $name;
-  $client->domain = $domain;
+  $domain ?? $client->domain = $domain;
 
   if ($client !== null) {
     $array = json_decode($client->setWebhook(), true);
@@ -78,8 +78,6 @@ class Start extends Bot
 PHP;
 
     file_put_contents($startFilePath, $startFileContent);
-  } else {
-    echo "Error: Start.php file already exists!";
   }
 });
 
@@ -103,12 +101,16 @@ Artisan::command("tgb:del {name}", function () {
       $array = json_decode($client->removeWebhook(), true);
       $description = $array['description'];
       echo "
-  $description
+$description
        ";
     } else {
-      echo "Error: There is no such bot!";
+      echo "
+Error: There is no such bot!
+      ";
     }
   } else {
-    echo "Error: Bot name not found in config!";
+    echo "
+Error: Bot name not found in config!
+    ";
   }
 });
