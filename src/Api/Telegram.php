@@ -174,7 +174,7 @@ class Telegram
      */
     public function setWebhook()
     {
-        $host = $this->domain ?? $_SERVER['SERVER_NAME'];
+        $host = $this->domain ?? request()->getHost();
 
         return $this->method('setWebhook', [
             "url" => 'https://' . $host . '/bot/' . $this->getToken(),
