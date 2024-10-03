@@ -68,7 +68,6 @@ class Client extends Telegram
         return $this->deleteMessage($this->getUserId(), $message_id);
     }
 
-
     /**
      * Метод редактирования сообщения текущему пользователю
      *
@@ -86,6 +85,35 @@ class Client extends Telegram
         $keyboard ? $keygrid = $this->grid($keyboard, $layout) : $keyboard;
         $type_keyboard === 1 ? $type = "inlineKeyboard" : $type = "keyboard";
         return $this->editMessage($this->getUserId(), $message_id, $message, $keyboard ? $this->$type($keygrid) : $keyboard, $parse_mode);
+    }
+
+    /**
+     * Метод редактирования разметки клавиатуры текущему пользователю
+     *
+     * @param string $message_id id сообщения
+     * @param array $keyboard Клавиатура для сообщения (необязательно).
+     * @param int $layout Число делений или массив с ручным расположением.
+     * 
+     */
+    public function editReplyMarkupSelf($message_id, $keyboard, $layout = 2)
+    {
+        $keygrid = $this->grid($keyboard, $layout);
+        return $this->editMessageReplyMarkup($this->getUserId(), $message_id, $this->inlineKeyboard($keygrid));
+    }
+
+    /**
+     * Метод редактирования разметки клавиатуры для другого пользователя
+     *
+     * @param int $chat_id Идентификатор чата.
+     * @param string $message_id id сообщения
+     * @param array $keyboard Клавиатура для сообщения (необязательно).
+     * @param int $layout Число делений или массив с ручным расположением.
+     * 
+     */
+    public function editReplyMarkupOut($chat_id, $message_id, $keyboard, $layout = 2)
+    {
+        $keygrid = $this->grid($keyboard, $layout);
+        return $this->editMessageReplyMarkup($chat_id, $message_id, $this->inlineKeyboard($keygrid));
     }
 
     /**
