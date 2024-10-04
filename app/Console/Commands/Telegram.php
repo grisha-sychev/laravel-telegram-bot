@@ -40,9 +40,7 @@ return ' . var_export($config, true) . ';'
   if ($client !== null) {
     $array = json_decode($client->setWebhook(), true);
     $description = $array['description'];
-    echo "
-  $description
-       ";
+    $this->info(PHP_EOL . $description . PHP_EOL);
   }
 
   $botNameCapitalized = ucfirst($name);
@@ -107,17 +105,11 @@ Artisan::command("tgb:del {name}", function () {
     if ($client !== null) {
       $array = json_decode($client->removeWebhook(), true);
       $description = $array['description'];
-      echo "
-$description
-       ";
+      $this->info(PHP_EOL . $description . PHP_EOL);
     } else {
-      echo "
-Error: There is no such bot!
-      ";
+      $this->info(PHP_EOL . "Error: There is no such bot!" . PHP_EOL);
     }
   } else {
-    echo "
-Error: Bot name not found in config!
-    ";
+    $this->info(PHP_EOL . "Error: Bot name not found in config!" . PHP_EOL);
   }
 });
