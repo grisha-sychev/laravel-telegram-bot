@@ -12,6 +12,8 @@ class TelegramServiceProvider extends ServiceProvider
 {
     public function map()
     {
-        Route::withoutMiddleware(['web', 'App\Http\Middleware\VerifyCsrfToken'])->group(base_path('routes/tgb.php'));
+        if (file_exists(base_path('routes/tgb.php'))) {
+            Route::withoutMiddleware(['web', 'App\Http\Middleware\VerifyCsrfToken'])->group(base_path('routes/tgb.php'));
+        }
     }
 }
