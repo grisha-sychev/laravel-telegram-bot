@@ -26,7 +26,7 @@ Artisan::command("tgb:new {name} {token} {domain=null}", function () {
     $configPath,
     '<?php
 
-  return ' . var_export($config, true) . ';'
+return ' . var_export($config, true) . ';'
   );
 
   // Перезагружаем конфиг, чтобы изменения вступили в силу
@@ -35,7 +35,7 @@ Artisan::command("tgb:new {name} {token} {domain=null}", function () {
   // Регистрируем бота
   $client = new Telegram();
   $client->bot = $name;
-  $domain ? $client->domain = $domain : null;
+  $client->domain = $domain ? $domain : null;
 
   if ($client !== null) {
     $array = json_decode($client->setWebhook(), true);
@@ -43,21 +43,19 @@ Artisan::command("tgb:new {name} {token} {domain=null}", function () {
     echo "
   $description
        ";
-    if ($description === "Webhook is already set") {
-      return;
-    }
   }
 
-  // Создаем папку и файл для бота
   $botNameCapitalized = ucfirst($name);
-  $botDirectory = app_path("Http/Bots/{$botNameCapitalized}");
+
+  // Создаем папку и файл для бота
+  $botDirectory = app_path("Http/Bots/" . $botNameCapitalized);
 
   // Создаем папку, если она не существует
   if (!File::exists($botDirectory)) {
     File::makeDirectory($botDirectory, 0755, true);
   }
 
-  $startFilePath = "{$botDirectory}/Start.php";
+  $startFilePath = $botDirectory . "/Start.php";
 
   // Создаем файл, если он не существует
   if (!File::exists($startFilePath)) {
@@ -101,7 +99,7 @@ Artisan::command("tgb:del {name}", function () {
   if (isset($config[$name])) {
     unset($config[$name]);
     File::put($configPath, '<?php return ' . var_export($config, true) . ';');
-    
+
     // Удаляем вебхук бота
     $client = new Telegram();
     $client->bot = $name;
