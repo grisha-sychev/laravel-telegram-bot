@@ -14,6 +14,11 @@ Artisan::command("tgb:new {name} {token} {domain=null}", function () {
   // Записываем имя и токен в конфиг
   $configPath = config_path('tgb.php');
   $config = include $configPath;
+
+  if (!is_array($config)) {
+    $config = [];
+  }
+
   $config[$name] = $token;
 
   file_put_contents(
@@ -29,7 +34,7 @@ Artisan::command("tgb:new {name} {token} {domain=null}", function () {
   // Регистрируем бота
   $client = new Telegram();
   $client->bot = $name;
-  $domain ?? $client->domain = $domain;
+  $domain ? $client->domain = $domain : null;
 
   if ($client !== null) {
     $array = json_decode($client->setWebhook(), true);
