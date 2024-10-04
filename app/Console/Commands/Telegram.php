@@ -4,6 +4,7 @@ namespace App\Console;
 
 use Tgb\Api\Telegram;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\File;
 
 // Сначала записывает имя и токен в конфиг tgb, далее делает регистрацию бота
 Artisan::command("tgb:new {name} {token} {domain=null}", function () {
@@ -21,11 +22,11 @@ Artisan::command("tgb:new {name} {token} {domain=null}", function () {
 
   $config[$name] = $token;
 
-  file_put_contents(
+  File::put(
     $configPath,
     '<?php
 
-   return ' . var_export($config, true) . ';'
+  return ' . var_export($config, true) . ';'
   );
 
   // Перезагружаем конфиг, чтобы изменения вступили в силу
@@ -50,13 +51,16 @@ Artisan::command("tgb:new {name} {token} {domain=null}", function () {
   // Создаем папку и файл для бота
   $botNameCapitalized = ucfirst($name);
   $botDirectory = app_path("Http/Bots/{$botNameCapitalized}");
-  $startFilePath = "{$botDirectory}/Start.php";
 
-  if (!file_exists($botDirectory)) {
-    mkdir($botDirectory, 0755, true);
+  // Создаем папку, если она не существует
+  if (!File::exists($botDirectory)) {
+    File::makeDirectory($botDirectory, 0755, true);
   }
 
-  if (!file_exists($startFilePath)) {
+  $startFilePath = "{$botDirectory}/Start.php";
+
+  // Создаем файл, если он не существует
+  if (!File::exists($startFilePath)) {
     $startFileContent = <<<PHP
 <?php
 
@@ -82,7 +86,7 @@ class Start extends Bot
 }
 PHP;
 
-    file_put_contents($startFilePath, $startFileContent);
+    File::put($startFilePath, $startFileContent);
   }
 });
 
@@ -96,8 +100,8 @@ Artisan::command("tgb:del {name}", function () {
 
   if (isset($config[$name])) {
     unset($config[$name]);
-    file_put_contents($configPath, '<?php return ' . var_export($config, true) . ';');
-
+    File::put($configPath, '<?php return ' . var_export($config, true) . ';');
+    
     // Удаляем вебхук бота
     $client = new Telegram();
     $client->bot = $name;
