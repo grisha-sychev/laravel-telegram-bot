@@ -4,7 +4,6 @@ namespace App\Console;
 
 use Tgb\Api\Telegram;
 use Illuminate\Support\Facades\Artisan;
-use Illuminate\Support\Facades\File;
 
 // Сначала записывает имя и токен в конфиг tgb, далее делает регистрацию бота
 Artisan::command("tgb:new {name} {token} {domain=null}", function () {
@@ -15,18 +14,13 @@ Artisan::command("tgb:new {name} {token} {domain=null}", function () {
   // Записываем имя и токен в конфиг
   $configPath = config_path('tgb.php');
   $config = include $configPath;
-
-  if (!is_array($config)) {
-    $config = [];
-  }
-
   $config[$name] = $token;
 
-  File::put(
+  file_put_contents(
     $configPath,
     '<?php
 
-return ' . var_export($config, true) . ';'
+   return ' . var_export($config, true) . ';'
   );
 
   // Перезагружаем конфиг, чтобы изменения вступили в силу
@@ -35,28 +29,29 @@ return ' . var_export($config, true) . ';'
   // Регистрируем бота
   $client = new Telegram();
   $client->bot = $name;
-  $client->domain = $domain ? $domain : null;
+  $domain ?? $client->domain = $domain;
 
   if ($client !== null) {
     $array = json_decode($client->setWebhook(), true);
     $description = $array['description'];
-    $this->info(PHP_EOL . $description . PHP_EOL);
+    echo "
+  $description
+       ";
+    if ($description === "Webhook is already set") {
+      return;
+    }
   }
-
-  $botNameCapitalized = ucfirst($name);
 
   // Создаем папку и файл для бота
-  $botDirectory = app_path("Http/Bots/" . $botNameCapitalized);
+  $botNameCapitalized = ucfirst($name);
+  $botDirectory = app_path("Http/Bots/{$botNameCapitalized}");
+  $startFilePath = "{$botDirectory}/Start.php";
 
-  // Создаем папку, если она не существует
-  if (!File::exists($botDirectory)) {
-    File::makeDirectory($botDirectory, 0755, true);
+  if (!file_exists($botDirectory)) {
+    mkdir($botDirectory, 0755, true);
   }
 
-  $startFilePath = $botDirectory . "/Start.php";
-
-  // Создаем файл, если он не существует
-  if (!File::exists($startFilePath)) {
+  if (!file_exists($startFilePath)) {
     $startFileContent = <<<PHP
 <?php
 
@@ -82,7 +77,7 @@ class Start extends Bot
 }
 PHP;
 
-    File::put($startFilePath, $startFileContent);
+    file_put_contents($startFilePath, $startFileContent);
   }
 });
 
@@ -96,7 +91,7 @@ Artisan::command("tgb:del {name}", function () {
 
   if (isset($config[$name])) {
     unset($config[$name]);
-    File::put($configPath, '<?php return ' . var_export($config, true) . ';');
+    file_put_contents($configPath, '<?php return ' . var_export($config, true) . ';');
 
     // Удаляем вебхук бота
     $client = new Telegram();
@@ -105,11 +100,17 @@ Artisan::command("tgb:del {name}", function () {
     if ($client !== null) {
       $array = json_decode($client->removeWebhook(), true);
       $description = $array['description'];
-      $this->info(PHP_EOL . $description . PHP_EOL);
+      echo "
+$description
+       ";
     } else {
-      $this->info(PHP_EOL . "Error: There is no such bot!" . PHP_EOL);
+      echo "
+Error: There is no such bot!
+      ";
     }
   } else {
-    $this->info(PHP_EOL . "Error: Bot name not found in config!" . PHP_EOL);
+    echo "
+Error: Bot name not found in config!
+    ";
   }
 });

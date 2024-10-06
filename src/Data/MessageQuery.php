@@ -4,15 +4,16 @@ namespace Tgb\Data;
 
 class MessageQuery
 {
-    private $data;
     private $updateId;
     private $messageId;
     private $fromId;
     private $fromIsBot;
     private $fromFirstName;
+    private $fromLastName;
     private $fromUsername;
     private $chatId;
     private $chatFirstName;
+    private $chatLastName;
     private $chatUsername;
     private $chatType;
     private $messageDate;
@@ -29,15 +30,16 @@ class MessageQuery
 
     public function __construct(array $data)
     {
-        $this->data = $data;
         $this->updateId = $data['update_id'] ?? null;
         $this->messageId = $data['message']['message_id'] ?? null;
         $this->fromId = $data['message']['from']['id'] ?? null;
         $this->fromIsBot = $data['message']['from']['is_bot'] ?? null;
         $this->fromFirstName = $data['message']['from']['first_name'] ?? null;
+        $this->fromLastName = $data['message']['from']['last_name'] ?? null;
         $this->fromUsername = $data['message']['from']['username'] ?? null;
         $this->chatId = $data['message']['chat']['id'] ?? null;
         $this->chatFirstName = $data['message']['chat']['first_name'] ?? null;
+        $this->chatLastName = $data['message']['chat']['last_name'] ?? null;
         $this->chatUsername = $data['message']['chat']['username'] ?? null;
         $this->chatType = $data['message']['chat']['type'] ?? null;
         $this->messageDate = $data['message']['date'] ?? null;
@@ -52,11 +54,7 @@ class MessageQuery
         $this->document = $data['message']['document'] ?? null;
         $this->date = $data['message']['date'] ?? null;
     }
-    public function getAll()
-    {
-        $this->data;
-        return $this;
-    }
+
     public function getUpdateId()
     {
         return $this->updateId;
@@ -82,6 +80,11 @@ class MessageQuery
         return $this->fromFirstName;
     }
 
+    public function getLastFirstName()
+    {
+        return $this->fromLastName;
+    }
+
     public function getFromUsername()
     {
         return $this->fromUsername;
@@ -95,6 +98,11 @@ class MessageQuery
     public function getChatFirstName()
     {
         return $this->chatFirstName;
+    }
+
+    public function getChatLastName()
+    {
+        return $this->chatLastName;
     }
 
     public function getChatUsername()

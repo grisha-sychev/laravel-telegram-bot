@@ -126,10 +126,37 @@ class Client extends Telegram
      * @param string|null $parse_mode Включение HTML мода, по умолчанию включен (необязательно).
      * 
      */
-
     public function editSelfInline($message_id, $message, $keyboard = null, $layout = 2, $parse_mode = "HTML")
     {
         return $this->editSelf($message_id, $message, $keyboard, $layout, 1, $parse_mode);
+    }
+
+    /**
+     * Метод редактирования сообщения текущему пользователю с использованием с возвратом сallback
+     *
+     * @param string|array $message Текст сообщения.
+     * @param array|null $keyboard Клавиатура для сообщения (необязательно).
+     * @param int $layout Число делений или массив с ручным расположением.
+     * @param string|null $parse_mode Включение HTML мода, по умолчанию включен (необязательно).
+     * 
+     */
+    public function editSelfCallback($message, $keyboard = null, $layout = 2, $parse_mode = "HTML")
+    {
+        return $this->editSelf($this->getMessageId(), $message, $keyboard, $layout, 0, $parse_mode);
+    }
+
+    /**
+     * Метод редактирования сообщения текущему пользователю с использованием inlineKeyboard с возвратом сallback
+     *
+     * @param string|array $message Текст сообщения.
+     * @param array|null $keyboard Клавиатура для сообщения (необязательно).
+     * @param int $layout Число делений или массив с ручным расположением.
+     * @param string|null $parse_mode Включение HTML мода, по умолчанию включен (необязательно).
+     * 
+     */
+    public function editSelfInlineCallback($message, $keyboard = null, $layout = 2, $parse_mode = "HTML")
+    {
+        return $this->editSelfInline($this->getMessageId(), $message, $keyboard, $layout, $parse_mode);
     }
 
     /**
@@ -199,63 +226,9 @@ class Client extends Telegram
      *
      * @return \Illuminate\Http\Client\Response|null Ответ от Telegram API.
      */
-    public function sendInvoiceSelf(
-        $title,
-        $description,
-        $payload,
-        $provider_token,
-        $currency,
-        $prices,
-        $max_tip_amount = null,
-        $suggested_tip_amounts = null,
-        $start_parameter = null,
-        $provider_data = null,
-        $photo_url = null,
-        $photo_size = null,
-        $photo_width = null,
-        $photo_height = null,
-        $need_name = false,
-        $need_phone_number = false,
-        $need_email = false,
-        $need_shipping_address = false,
-        $send_phone_number_to_provider = false,
-        $send_email_to_provider = false,
-        $is_flexible = false,
-        $disable_notification = false,
-        $protect_content = false,
-        $message_effect_id = null,
-        $reply_parameters = null,
-        $reply_markup = null
-    ) {
-        return $this->sendInvoice(
-            $this->getUserId(),
-            $title,
-            $description,
-            $payload,
-            $provider_token,
-            $currency,
-            $prices,
-            $max_tip_amount,
-            $suggested_tip_amounts,
-            $start_parameter,
-            $provider_data,
-            $photo_url,
-            $photo_size,
-            $photo_width,
-            $photo_height,
-            $need_name,
-            $need_phone_number,
-            $need_email,
-            $need_shipping_address,
-            $send_phone_number_to_provider,
-            $send_email_to_provider,
-            $is_flexible,
-            $disable_notification,
-            $protect_content,
-            $message_effect_id,
-            $reply_parameters,
-            $reply_markup
-        );
+    public function sendInvoiceSelf($title, $description, $payload, $provider_token, $currency, $prices, $max_tip_amount = null, $suggested_tip_amounts = null, $start_parameter = null, $provider_data = null, $photo_url = null, $photo_size = null, $photo_width = null, $photo_height = null, $need_name = false, $need_phone_number = false, $need_email = false, $need_shipping_address = false, $send_phone_number_to_provider = false, $send_email_to_provider = false, $is_flexible = false, $disable_notification = false, $protect_content = false, $message_effect_id = null, $reply_parameters = null, $reply_markup = null)
+    {
+        return $this->sendInvoice($this->getUserId(), $title, $description, $payload, $provider_token, $currency, $prices, $max_tip_amount, $suggested_tip_amounts, $start_parameter, $provider_data, $photo_url, $photo_size, $photo_width, $photo_height, $need_name, $need_phone_number, $need_email, $need_shipping_address, $send_phone_number_to_provider, $send_email_to_provider, $is_flexible, $disable_notification, $protect_content, $message_effect_id, $reply_parameters, $reply_markup);
     }
 
     /**

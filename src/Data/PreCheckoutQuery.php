@@ -10,6 +10,7 @@ class PreCheckoutQuery
     private $fromId;
     private $fromIsBot;
     private $fromFirstName;
+    private $fromLastName;
     private $fromUsername;
     private $fromLanguageCode;
     private $fromIsPremium;
@@ -27,6 +28,7 @@ class PreCheckoutQuery
         $this->fromId = $data['pre_checkout_query']['from']['id'] ?? null;
         $this->fromIsBot = $data['pre_checkout_query']['from']['is_bot'] ?? null;
         $this->fromFirstName = $data['pre_checkout_query']['from']['first_name'] ?? null;
+        $this->fromLastName = $data['pre_checkout_query']['from']['last_name'] ?? null;
         $this->fromUsername = $data['pre_checkout_query']['from']['username'] ?? null;
         $this->fromLanguageCode = $data['pre_checkout_query']['from']['language_code'] ?? null;
         $this->fromIsPremium = $data['pre_checkout_query']['from']['is_premium'] ?? null;
@@ -65,6 +67,11 @@ class PreCheckoutQuery
     public function getFromFirstName()
     {
         return $this->fromFirstName;
+    }
+
+    public function getFromLastName()
+    {
+        return $this->fromLastName;
     }
 
     public function getFromUsername()

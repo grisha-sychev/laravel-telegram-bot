@@ -4,17 +4,18 @@ namespace Tgb\Data;
 
 class CallbackQuery
 {
-    private $data;
     private $updateId;
     private $callbackQueryId;
     private $fromId;
     private $fromIsBot;
     private $fromFirstName;
+    private $fromLastName;
     private $fromUsername;
     private $messageId;
     private $messageFromId;
     private $messageIsBot;
     private $messageFirstName;
+    private $messageLastName;
     private $messageUsername;
     private $chatId;
     private $chatFirstName;
@@ -28,17 +29,18 @@ class CallbackQuery
 
     public function __construct(array $data)
     {
-        $this->data = $data;
         $this->updateId = $data['update_id'] ?? null;
         $this->callbackQueryId = $data['callback_query']['id'] ?? null;
         $this->fromId = $data['callback_query']['from']['id'] ?? null;
         $this->fromIsBot = $data['callback_query']['from']['is_bot'] ?? null;
         $this->fromFirstName = $data['callback_query']['from']['first_name'] ?? null;
+        $this->fromLastName = $data['callback_query']['from']['last_name'] ?? null;
         $this->fromUsername = $data['callback_query']['from']['username'] ?? null;
         $this->messageId = $data['callback_query']['message']['message_id'] ?? null;
         $this->messageFromId = $data['callback_query']['message']['from']['id'] ?? null;
         $this->messageIsBot = $data['callback_query']['message']['from']['is_bot'] ?? null;
         $this->messageFirstName = $data['callback_query']['message']['from']['first_name'] ?? null;
+        $this->messageLastName = $data['callback_query']['message']['from']['last_name'] ?? null;
         $this->messageUsername = $data['callback_query']['message']['from']['username'] ?? null;
         $this->chatId = $data['callback_query']['message']['chat']['id'] ?? null;
         $this->chatFirstName = $data['callback_query']['message']['chat']['first_name'] ?? null;
@@ -49,12 +51,6 @@ class CallbackQuery
         $this->inlineKeyboard = $data['callback_query']['message']['reply_markup']['inline_keyboard'] ?? null;
         $this->chatInstance = $data['callback_query']['chat_instance'] ?? null;
         $this->callbackData = $data['callback_query']['data'] ?? null;
-    }
-
-    public function getAll()
-    {
-        $this->data;
-        return $this;
     }
 
     public function getUpdateId()
@@ -82,6 +78,11 @@ class CallbackQuery
         return $this->fromFirstName;
     }
 
+    public function getFromLastName()
+    {
+        return $this->fromLastName;
+    }
+
     public function getFromUsername()
     {
         return $this->fromUsername;
@@ -105,6 +106,11 @@ class CallbackQuery
     public function getMessageFirstName()
     {
         return $this->messageFirstName;
+    }
+
+    public function getMessageLastName()
+    {
+        return $this->messageLastName;
     }
 
     public function getMessageUsername()
