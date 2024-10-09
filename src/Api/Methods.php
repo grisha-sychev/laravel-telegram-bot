@@ -24,14 +24,13 @@ trait Methods
 
     /**
      * Устанавливает вебхук (Webhook) для бота.
-     *
      */
     public function setWebhook()
     {
-        $host = $this->domain ?? request()->getHost();
+        $hostname = $this->hostname ?? request()->getHost();
 
         return $this->method('setWebhook', [
-            "url" => 'https://' . $host . '/bot/' . $this->getToken(),
+            "url" => 'https://' . $hostname . '/bot/' . $this->getToken(),
         ]);
     }
 

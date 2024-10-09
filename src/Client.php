@@ -546,7 +546,7 @@ class Client extends Telegram
     {
         $calledClass = get_called_class();
         $namespaceParts = explode('\\', $calledClass);
-        $this->bot = strtolower($namespaceParts[count($namespaceParts) - 2]);
+        $this->bot = strtolower($namespaceParts[count($namespaceParts) - 1]);
     }
 
     /**

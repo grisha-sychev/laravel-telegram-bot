@@ -5,34 +5,29 @@ namespace App\Console;
 use Tgb\Api\Telegram;
 use Illuminate\Support\Facades\Artisan;
 
-// Сначала записывает имя и токен в конфиг tgb, далее делает регистрацию бота
-Artisan::command("tgb:new {name} {token} {domain=null}", function () {
+Artisan::command("tgb:new {name} {token} {hostname=null}", function () {
   $name = $this->argument('name');
   $token = $this->argument('token');
-  $domain = $this->argument('domain');
+  $hostname = $this->argument('hostname');
 
-  // Записываем имя и токен в конфиг
   $configPath = config_path('tgb.php');
   $config = include $configPath;
+  $config = is_array($config) ? $config : [];
   $config[$name] = $token;
 
   file_put_contents(
     $configPath,
-    '<?php
-
-   return ' . var_export($config, true) . ';'
+    '<?php return ' . var_export($config, true) . ';'
   );
 
-  // Перезагружаем конфиг, чтобы изменения вступили в силу
   Artisan::call('config:cache');
 
-  // Регистрируем бота
   $client = new Telegram();
   $client->bot = $name;
-  $domain ?? $client->domain = $domain;
+  $client->hostname = $hostname ? $hostname : $client->hostname;
 
   if ($client !== null) {
-    $array = json_decode($client->setWebhook(), true);
+    $array = $client->setWebhook();
     $description = $array['description'];
 
     $this->info(PHP_EOL . $description . PHP_EOL);
@@ -42,15 +37,10 @@ Artisan::command("tgb:new {name} {token} {domain=null}", function () {
     }
   }
 
-  // Создаем папку и файл для бота
   $botNameCapitalized = ucfirst($name);
   $botDirectory = app_path("Bots");
 
   $startFilePath = "{$botDirectory}/{$botNameCapitalized}.php";
-
-  // if (!file_exists($botDirectory)) {
-  //   mkdir($botDirectory, 0755, true);
-  // }
 
   if (!file_exists($startFilePath)) {
     $startFileContent = <<<PHP
@@ -65,7 +55,7 @@ class {$botNameCapitalized} extends AbstractBot
 
     public function __construct()
     { 
-         parent::__construct();
+        parent::__construct();
         \$this->register(false);
     }
 
@@ -87,7 +77,6 @@ PHP;
 Artisan::command("tgb:del {name}", function () {
   $name = $this->argument('name');
 
-  // Удаляем имя и токен из конфига
   $configPath = config_path('tgb.php');
   $config = include $configPath;
 
@@ -95,12 +84,11 @@ Artisan::command("tgb:del {name}", function () {
     unset($config[$name]);
     file_put_contents($configPath, '<?php return ' . var_export($config, true) . ';');
 
-    // Удаляем вебхук бота
     $client = new Telegram();
     $client->bot = $name;
 
     if ($client !== null) {
-      $array = json_decode($client->removeWebhook(), true);
+      $array = $client->removeWebhook();
       $description = $array['description'];
       $this->info(PHP_EOL . $description . PHP_EOL);
     } else {

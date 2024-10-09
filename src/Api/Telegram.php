@@ -50,9 +50,9 @@ class Telegram
     public ?string $message = null;
 
     /**
-     * @var string|null $domain Домен, связанный с ботом.
+     * @var string|null $hostname host, связанный с ботом.
      */
-    public ?string $domain = null;
+    public ?string $hostname = null;
 
     /**
      * Конструктор класса Client.
@@ -62,7 +62,7 @@ class Telegram
     public function __construct()
     {
         $this->bot = $bot ?? $this->bot;
-        $this->domain = $domain ?? $this->domain;
+        $this->hostname = $hostname ?? $this->hostname;
     }
 
     /**
