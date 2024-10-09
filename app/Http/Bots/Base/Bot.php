@@ -11,19 +11,22 @@ class Bot extends Client
     {
         $user = $this->getUserData();
 
-        if (!$user) {
-            $user = new User();
-            $user->tg_id = $this->getUserId();
-            $user->login = $this->getUsername();
-            $user->name = $this->getFirstName();
-            $user->save();
-        } else {
-            if ($updated) {
+        if ($this->blankRequest()) {
+            if (!$user) {
+                $user = new User();
+                $user->tg_id = $this->getUserId();
                 $user->login = $this->getUsername();
                 $user->name = $this->getFirstName();
                 $user->save();
+            } else {
+                if ($updated) {
+                    $user->login = $this->getUsername();
+                    $user->name = $this->getFirstName();
+                    $user->save();
+                }
             }
-        }
+            return true;
+        } 
 
         return true;
     }

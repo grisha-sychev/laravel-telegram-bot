@@ -17,6 +17,10 @@ use Tgb\Services\Appendix;
 
 class Client extends Telegram
 {
+    public function __construct()
+    {
+        $this->run();
+    }
     /**
      * Метод отправки сообщения текущему пользователю
      *
@@ -531,6 +535,21 @@ class Client extends Telegram
     }
 
     /**
+     * Запускает основной процесс для клиента.
+     *
+     * Этот метод определяет класс, который его вызвал, извлекает части пространства имен
+     * и устанавливает свойство bot в нижний регистр предпоследней части пространства имен.
+     *
+     * @return void
+     */
+    private function run()
+    {
+        $calledClass = get_called_class();
+        $namespaceParts = explode('\\', $calledClass);
+        $this->bot = strtolower($namespaceParts[count($namespaceParts) - 2]);
+    }
+
+    /**
      * Метод для блокировки медиа
      *
      * @param callback $callback
@@ -549,5 +568,15 @@ class Client extends Telegram
                 exit;
             }
         }
+    }
+
+    /**
+     * Метод проверяющий запрос на пустоту
+     *
+     * @return bool Возвращает true, если запрос пустой, иначе false
+     */
+    public function blankRequest()
+    {
+        $this->request() instanceof \stdClass ? false : true;
     }
 }

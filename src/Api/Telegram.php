@@ -8,6 +8,7 @@ use Tgb\Data\CallbackQuery;
 use Tgb\Data\MessageQuery;
 use Tgb\Data\MyChatMemberQuery;
 use Tgb\Data\PreCheckoutQuery;
+use Tgb\Data\ChannelPostQuery;
 
 use Illuminate\Support\Facades\Request;
 
@@ -78,7 +79,7 @@ class Telegram
     /**
      * Получает все данные запроса от Telegram и возвращает их в виде массива.
      *
-     * Данные запроса от Telegram в виде массива.
+     * Данные запроса от Telegram в виде обьекта.
      */
     public function request()
     {
@@ -89,8 +90,12 @@ class Telegram
                 return new CallbackQuery($all);
             case isset($all['pre_checkout_query']):
                 return new PreCheckoutQuery($all);
-            default:
+            case isset($all['message']):
                 return new MessageQuery($all);
+            case isset($all['channel_post']):
+                return new ChannelPostQuery($all);
+            default:
+                return new \stdClass();
         }
     }
 
@@ -168,7 +173,7 @@ class Telegram
             return $user->getFromId();
         }
 
-        return null;
+        return;
     }
 
     /**
@@ -198,7 +203,7 @@ class Telegram
         if (method_exists($user, 'getFromUsername')) {
             return $user->getFromUsername();
         }
-        return null;
+        return;
     }
 
     /**
@@ -213,7 +218,7 @@ class Telegram
         if (method_exists($user, 'getFromFirstName')) {
             return $user->getFromFirstName();
         }
-        return null;
+        return;
     }
 
     /**
@@ -228,7 +233,7 @@ class Telegram
         if (method_exists($user, 'getFromLastName')) {
             return $user->getFromLastName();
         }
-        return null;
+        return;
     }
 
     /**
@@ -243,7 +248,7 @@ class Telegram
         if (method_exists($user, 'getChatType')) {
             return $user->getChatType();
         }
-        return null;
+        return;
     }
 
     /**
@@ -255,13 +260,10 @@ class Telegram
     {
         $userProfilePhotos = json_decode($this->getUserProfilePhotos($this->getUserId()), true);
 
-        // Проверяем наличие фото
         if (isset($userProfilePhotos['result']['photos']) && !empty($userProfilePhotos['result']['photos'])) {
-            // Получаем file_id первой фотографии
             return $userProfilePhotos['result']['photos'][0][0]['file_id'];
         } else {
-            // Возвращаем null или другое значение, если фото отсутствует
-            return null;
+            return;
         }
     }
 
@@ -283,7 +285,7 @@ class Telegram
         }
 
         // Возвращаем null или другое значение, если информация о файле отсутствует
-        return null;
+        return;
     }
 
     /**
@@ -298,7 +300,7 @@ class Telegram
         if (method_exists($user, 'getMessageId')) {
             return $user->getMessageId();
         }
-        return null;
+        return;
     }
 
     /**
@@ -313,7 +315,7 @@ class Telegram
         if (method_exists($user, 'getMessageText')) {
             return $user->getMessageText();
         }
-        return null;
+        return;
     }
 
     /**
@@ -329,7 +331,7 @@ class Telegram
             return $user->getMessageDate();
         }
 
-        return null;
+        return;
     }
 
     /**
@@ -363,7 +365,7 @@ class Telegram
             ];
         }
 
-        return null;
+        return;
     }
 
     /**
@@ -384,7 +386,7 @@ class Telegram
             ];
         }
 
-        return null;
+        return;
     }
 
     /**
@@ -399,7 +401,7 @@ class Telegram
         if ($request && method_exists($request, 'getPreCheckoutQuery')) {
             return $request->getPreCheckoutQuery();
         }
-        return null;
+        return;
     }
 
     /**
@@ -419,7 +421,7 @@ class Telegram
             ];
         }
 
-        return null;
+        return;
     }
 
     /**

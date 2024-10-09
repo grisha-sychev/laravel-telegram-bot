@@ -64,6 +64,7 @@ class Start extends Bot
 
     public function __construct()
     { 
+         parent::__construct();
         \$this->register(false);
     }
 
