@@ -40,7 +40,7 @@ php artisan tgb:new main token ?hostname
 ```
 
 - main - имя бота
-- token - ващ токет бота
+- token - ваш токен бота
 - ?hostname - хост без https:// (для локальных серверов и тунелирования)
 
 ## Использование бота
