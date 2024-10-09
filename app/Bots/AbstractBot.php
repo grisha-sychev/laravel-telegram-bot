@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Bots\Base;
+namespace App\Bots;
 
 use Tgb\Client;
 use App\Models\User;
 
-class Bot extends Client
+class AbstractBot extends Client
 {
     public function register($updated = true)
     {

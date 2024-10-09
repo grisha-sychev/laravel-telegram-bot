@@ -13,15 +13,13 @@ Route::post('/bot/{token}', function ($token) {
         return response()->json(['error' => 'Bot not found'], 404);
     }
 
-    $botClass = 'App\\Http\\Bots\\' . ucfirst($botName) . '\\Start';
+    $botClass = 'App\\Bots\\' . ucfirst($botName);
 
     if (!class_exists($botClass)) {
         return response()->json(['error' => 'Bot class not found'], 404);
     }
 
-    $bot = new $botClass();
-    $bot->bot = $botName;
-    return $bot->handler();
+    return (new $botClass())->handler();
 });
 
 

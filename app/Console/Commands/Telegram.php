@@ -34,9 +34,9 @@ Artisan::command("tgb:new {name} {token} {domain=null}", function () {
   if ($client !== null) {
     $array = json_decode($client->setWebhook(), true);
     $description = $array['description'];
-    echo "
-  $description
-       ";
+
+    $this->info(PHP_EOL . $description . PHP_EOL);
+
     if ($description === "Webhook is already set") {
       return;
     }
@@ -44,22 +44,23 @@ Artisan::command("tgb:new {name} {token} {domain=null}", function () {
 
   // Создаем папку и файл для бота
   $botNameCapitalized = ucfirst($name);
-  $botDirectory = app_path("Http/Bots/{$botNameCapitalized}");
-  $startFilePath = "{$botDirectory}/Start.php";
+  $botDirectory = app_path("Bots");
 
-  if (!file_exists($botDirectory)) {
-    mkdir($botDirectory, 0755, true);
-  }
+  $startFilePath = "{$botDirectory}/{$botNameCapitalized}.php";
+
+  // if (!file_exists($botDirectory)) {
+  //   mkdir($botDirectory, 0755, true);
+  // }
 
   if (!file_exists($startFilePath)) {
     $startFileContent = <<<PHP
 <?php
 
-namespace App\Http\Bots\\{$botNameCapitalized};
+namespace App\Bots;
 
-use App\Http\Bots\Base\Bot;
+use App\Bots\AbstractBot;
 
-class Start extends Bot
+class {$botNameCapitalized} extends AbstractBot
 {
 
     public function __construct()
@@ -101,17 +102,11 @@ Artisan::command("tgb:del {name}", function () {
     if ($client !== null) {
       $array = json_decode($client->removeWebhook(), true);
       $description = $array['description'];
-      echo "
-$description
-       ";
+      $this->info(PHP_EOL . $description . PHP_EOL);
     } else {
-      echo "
-Error: There is no such bot!
-      ";
+      $this->info(PHP_EOL . 'Error: There is no such bot!' . PHP_EOL);
     }
   } else {
-    echo "
-Error: Bot name not found in config!
-    ";
+    $this->info(PHP_EOL . 'Error: Bot name not found in config!' . PHP_EOL);
   }
 });
