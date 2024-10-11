@@ -11,7 +11,7 @@ class AbstractBot extends Client
     {
         $user = $this->getUserData();
 
-        if ($this->blankRequest()) {
+        if (!$this->blankRequest()) {
             if (!$user) {
                 $user = new User();
                 $user->tg_id = $this->getUserId();
