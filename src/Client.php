@@ -577,6 +577,6 @@ class Client extends Telegram
      */
     public function blankRequest()
     {
-        $this->request() instanceof \stdClass ? false : true;
+        return ($this->request() instanceof \stdClass);
     }
 }
