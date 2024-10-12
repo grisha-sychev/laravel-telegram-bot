@@ -21,6 +21,27 @@ class Client extends Telegram
     {
         $this->run();
     }
+
+    /**
+     * Метод отправки сообщения другому пользователю
+     *
+     * @param int $id Идентификатор пользователя.
+     * @param string $message Текст сообщения.
+     * @param array|null $keyboard Клавиатура для сообщения (необязательно).
+     * @param int $layout Число делений или массив с ручным расположением.
+     * @param int $type_keyboard Тип каливатуры 0 - keyboard 1 - inlineKeyboard
+     * @param string|null $parse_mode Включение HTML мода, по умолчанию включен (необязательно).
+     *
+     */
+    public function sendOut($id, $message, $keyboard = null, $layout = 2, $type_keyboard = 0, $parse_mode = "HTML")
+    {
+        $keyboard = $keyboard !== null ? $this->simpleKeyboard($keyboard) : $keyboard;
+        is_array($message) ? $message = $this->html($message) : $message;
+        $keyboard ? $keygrid = $this->grid($keyboard, $layout) : $keyboard;
+        $type_keyboard === 1 ? $type = "inlineKeyboard" : $type = "keyboard";
+        return $this->sendMessage($id, $message, $keyboard ? $this->$type($keygrid) : $keyboard, $parse_mode);
+    }
+
     /**
      * Метод отправки сообщения текущему пользователю
      *
@@ -33,10 +54,7 @@ class Client extends Telegram
      */
     public function sendSelf($message, $keyboard = null, $layout = 2, $type_keyboard = 0, $parse_mode = "HTML")
     {
-        is_array($message) ? $message = $this->html($message) : $message;
-        $keyboard ? $keygrid = $this->grid($keyboard, $layout) : $keyboard;
-        $type_keyboard === 1 ? $type = "inlineKeyboard" : $type = "keyboard";
-        return $this->sendMessage($this->getUserId(), $message, $keyboard ? $this->$type($keygrid) : $keyboard, $parse_mode);
+        return $this->sendOut($this->getUserId(), $message, $keyboard, $layout, $type_keyboard, $parse_mode);
     }
 
     /**
@@ -62,14 +80,47 @@ class Client extends Telegram
     }
 
     /**
-     * Метод удаления сообщений в чате
+     * Метод удаления сообщений в чате для другого пользователя
+     *
+     * @param int $chat_id Идентификатор чата.
+     * @param string|array $message_id ID сообщения.
+     * 
+     */
+    public function deleteOut($chat_id, $message_id)
+    {
+        return $this->deleteMessage($chat_id, $message_id);
+    }
+
+    /**
+     * Метод удаления сообщений в чате для текущего пользователя
      *
      * @param string|array $message_id ID сообщения.
      * 
      */
-    public function deleteSelfMessage($message_id)
+    public function deleteSelf($message_id)
     {
-        return $this->deleteMessage($this->getUserId(), $message_id);
+        return $this->deleteOut($this->getUserId(), $message_id);
+    }
+
+    /**
+     * Метод редактирования сообщения другому пользователю
+     *
+     * @param int $chat_id Идентификатор чата.
+     * @param string $message_id id сообщения
+     * @param string|array $message Текст сообщения.
+     * @param array|null $keyboard Клавиатура для сообщения (необязательно).
+     * @param int $layout Число делений или массив с ручным расположением.
+     * @param int $type_keyboard Тип каливатуры 1 - keyboard 2 - inlineKeyboard
+     * @param string|null $parse_mode Включение HTML мода, по умолчанию включен (необязательно).
+     * 
+     */
+    public function editOut($chat_id, $message_id, $message, $keyboard = null, $layout = 2, $type_keyboard = 0, $parse_mode = "HTML")
+    {
+        $keyboard = $keyboard !== null ? $this->simpleKeyboard($keyboard) : $keyboard;
+        is_array($message) ? $message = $this->html($message) : $message;
+        $keyboard ? $keygrid = $this->grid($keyboard, $layout) : $keyboard;
+        $type_keyboard === 1 ? $type = "inlineKeyboard" : $type = "keyboard";
+        return $this->editMessage($chat_id, $message_id, $message, $keyboard ? $this->$type($keygrid) : $keyboard, $parse_mode);
     }
 
     /**
@@ -85,24 +136,7 @@ class Client extends Telegram
      */
     public function editSelf($message_id, $message, $keyboard = null, $layout = 2, $type_keyboard = 0, $parse_mode = "HTML")
     {
-        is_array($message) ? $message = $this->html($message) : $message;
-        $keyboard ? $keygrid = $this->grid($keyboard, $layout) : $keyboard;
-        $type_keyboard === 1 ? $type = "inlineKeyboard" : $type = "keyboard";
-        return $this->editMessage($this->getUserId(), $message_id, $message, $keyboard ? $this->$type($keygrid) : $keyboard, $parse_mode);
-    }
-
-    /**
-     * Метод редактирования разметки клавиатуры текущему пользователю
-     *
-     * @param string $message_id id сообщения
-     * @param array $keyboard Клавиатура для сообщения (необязательно).
-     * @param int $layout Число делений или массив с ручным расположением.
-     * 
-     */
-    public function editReplyMarkupSelf($message_id, $keyboard, $layout = 2)
-    {
-        $keygrid = $this->grid($keyboard, $layout);
-        return $this->editMessageReplyMarkup($this->getUserId(), $message_id, $this->inlineKeyboard($keygrid));
+        return $this->editOut($this->getUserId(), $message_id, $message, $keyboard, $layout, $type_keyboard, $parse_mode);
     }
 
     /**
@@ -116,8 +150,22 @@ class Client extends Telegram
      */
     public function editReplyMarkupOut($chat_id, $message_id, $keyboard, $layout = 2)
     {
-        $keygrid = $this->grid($keyboard, $layout);
-        return $this->editMessageReplyMarkup($chat_id, $message_id, $this->inlineKeyboard($keygrid));
+        $keyboard = $this->simpleKeyboard($keyboard);
+        $keyboard ? $keygrid = $this->grid($keyboard, $layout) : $keyboard;
+        return $this->editMessageReplyMarkup($chat_id, $message_id, $keyboard ? $this->inlineKeyboard($keygrid) : $keyboard);
+    }
+
+    /**
+     * Метод редактирования разметки клавиатуры текущему пользователю
+     *
+     * @param string $message_id id сообщения
+     * @param array $keyboard Клавиатура для сообщения (необязательно).
+     * @param int $layout Число делений или массив с ручным расположением.
+     * 
+     */
+    public function editReplyMarkupSelf($message_id, $keyboard = null, $layout = 2)
+    {
+        return $this->editReplyMarkupOut($this->getUserId(), $message_id, $keyboard, $layout);
     }
 
     /**
@@ -164,26 +212,6 @@ class Client extends Telegram
     }
 
     /**
-     * Метод отправки сообщения другому пользователю
-     *
-     * @param int $id Идентификатор пользователя.
-     * @param string $message Текст сообщения.
-     * @param array|null $keyboard Клавиатура для сообщения (необязательно).
-     * @param int $layout Число делений или массив с ручным расположением.
-     * @param int $type_keyboard Тип каливатуры 0 - keyboard 1 - inlineKeyboard
-     * @param string|null $parse_mode Включение HTML мода, по умолчанию включен (необязательно).
-     *
-     */
-    public function sendOut($id, $message, $keyboard = null, $layout = 2, $type_keyboard = 0, $parse_mode = "HTML")
-    {
-        is_array($message) ? $message = $this->html($message) : $message;
-        $keyboard ? $keygrid = $this->grid($keyboard, $layout) : $keyboard;
-        $type_keyboard === 1 ? $type = "inlineKeyboard" : $type = "keyboard";
-        return $this->sendMessage($id, $message, $keyboard ? $this->$type($keygrid) : $keyboard, $parse_mode);
-    }
-
-
-    /**
      * Метод отправки сообщения другому пользователю использует inlineKeyboard
      *
      * @param int $id Идентификатор пользователя.
@@ -196,6 +224,38 @@ class Client extends Telegram
     public function sendOutInline($id, $message, $keyboard = null, $layout = 2, $parse_mode = "HTML")
     {
         return $this->sendOut($id, $message, $keyboard, $layout, 1, $parse_mode);
+    }
+
+    /**
+     * Отправляет счет самому себе.
+     *
+     * @param int $chat_id Идентификатор чата.
+     * @param string $title Название счета.
+     * @param string $description Описание счета.
+     * @param string $payload Полезная нагрузка счета.
+     * @param string $provider_token Токен провайдера.
+     * @param string $start_parameter Параметр запуска.
+     * @param string $currency Валюта счета.
+     * @param array $prices Массив цен.
+     * @param int|null $reply_to_message_id ID сообщения, на которое нужно ответить (необязательно).
+     * @param bool $disable_notification Отключить уведомления (по умолчанию false).
+     * @param string|null $photo_url URL фотографии (необязательно).
+     * @param int|null $photo_size Размер фотографии (необязательно).
+     * @param int|null $photo_width Ширина фотографии (необязательно).
+     * @param int|null $photo_height Высота фотографии (необязательно).
+     * @param bool $need_name Требуется ли имя (по умолчанию false).
+     * @param bool $need_phone_number Требуется ли номер телефона (по умолчанию false).
+     * @param bool $need_email Требуется ли email (по умолчанию false).
+     * @param bool $need_shipping_address Требуется ли адрес доставки (по умолчанию false).
+     * @param bool $send_phone_number_to_provider Отправить ли номер телефона провайдеру (по умолчанию false).
+     * @param bool $send_email_to_provider Отправить ли email провайдеру (по умолчанию false).
+     * @param bool $is_flexible Гибкий ли счет (по умолчанию false).
+     *
+     * @return mixed Результат отправки счета.
+     */
+    public function sendInvoiceOut($chat_id, $title, $description, $payload, $provider_token, $start_parameter, $currency, $prices, $reply_to_message_id = null, $disable_notification = false, $photo_url = null, $photo_size = null, $photo_width = null, $photo_height = null, $need_name = false, $need_phone_number = false, $need_email = false, $need_shipping_address = false, $send_phone_number_to_provider = false, $send_email_to_provider = false, $is_flexible = false)
+    {
+        return $this->sendInvoice($chat_id, $title, $description, $payload, $provider_token, $start_parameter, $currency, $prices, $reply_to_message_id, $disable_notification, $photo_url, $photo_size, $photo_width, $photo_height, $need_name, $need_phone_number, $need_email, $need_shipping_address, $send_phone_number_to_provider, $send_email_to_provider, $is_flexible);
     }
 
     /**
@@ -232,39 +292,7 @@ class Client extends Telegram
      */
     public function sendInvoiceSelf($title, $description, $payload, $provider_token, $currency, $prices, $max_tip_amount = null, $suggested_tip_amounts = null, $start_parameter = null, $provider_data = null, $photo_url = null, $photo_size = null, $photo_width = null, $photo_height = null, $need_name = false, $need_phone_number = false, $need_email = false, $need_shipping_address = false, $send_phone_number_to_provider = false, $send_email_to_provider = false, $is_flexible = false, $disable_notification = false, $protect_content = false, $message_effect_id = null, $reply_parameters = null, $reply_markup = null)
     {
-        return $this->sendInvoice($this->getUserId(), $title, $description, $payload, $provider_token, $currency, $prices, $max_tip_amount, $suggested_tip_amounts, $start_parameter, $provider_data, $photo_url, $photo_size, $photo_width, $photo_height, $need_name, $need_phone_number, $need_email, $need_shipping_address, $send_phone_number_to_provider, $send_email_to_provider, $is_flexible, $disable_notification, $protect_content, $message_effect_id, $reply_parameters, $reply_markup);
-    }
-
-    /**
-     * Отправляет счет самому себе.
-     *
-     * @param int $chat_id Идентификатор чата.
-     * @param string $title Название счета.
-     * @param string $description Описание счета.
-     * @param string $payload Полезная нагрузка счета.
-     * @param string $provider_token Токен провайдера.
-     * @param string $start_parameter Параметр запуска.
-     * @param string $currency Валюта счета.
-     * @param array $prices Массив цен.
-     * @param int|null $reply_to_message_id ID сообщения, на которое нужно ответить (необязательно).
-     * @param bool $disable_notification Отключить уведомления (по умолчанию false).
-     * @param string|null $photo_url URL фотографии (необязательно).
-     * @param int|null $photo_size Размер фотографии (необязательно).
-     * @param int|null $photo_width Ширина фотографии (необязательно).
-     * @param int|null $photo_height Высота фотографии (необязательно).
-     * @param bool $need_name Требуется ли имя (по умолчанию false).
-     * @param bool $need_phone_number Требуется ли номер телефона (по умолчанию false).
-     * @param bool $need_email Требуется ли email (по умолчанию false).
-     * @param bool $need_shipping_address Требуется ли адрес доставки (по умолчанию false).
-     * @param bool $send_phone_number_to_provider Отправить ли номер телефона провайдеру (по умолчанию false).
-     * @param bool $send_email_to_provider Отправить ли email провайдеру (по умолчанию false).
-     * @param bool $is_flexible Гибкий ли счет (по умолчанию false).
-     *
-     * @return mixed Результат отправки счета.
-     */
-    public function sendInvoiceOut($chat_id, $title, $description, $payload, $provider_token, $start_parameter, $currency, $prices, $reply_to_message_id = null, $disable_notification = false, $photo_url = null, $photo_size = null, $photo_width = null, $photo_height = null, $need_name = false, $need_phone_number = false, $need_email = false, $need_shipping_address = false, $send_phone_number_to_provider = false, $send_email_to_provider = false, $is_flexible = false)
-    {
-        return $this->sendInvoice($chat_id, $title, $description, $payload, $provider_token, $start_parameter, $currency, $prices, $reply_to_message_id, $disable_notification, $photo_url, $photo_size, $photo_width, $photo_height, $need_name, $need_phone_number, $need_email, $need_shipping_address, $send_phone_number_to_provider, $send_email_to_provider, $is_flexible);
+        return $this->sendInvoiceOut($this->getUserId(), $title, $description, $payload, $provider_token, $currency, $prices, $max_tip_amount, $suggested_tip_amounts, $start_parameter, $provider_data, $photo_url, $photo_size, $photo_width, $photo_height, $need_name, $need_phone_number, $need_email, $need_shipping_address, $send_phone_number_to_provider, $send_email_to_provider, $is_flexible, $disable_notification, $protect_content, $message_effect_id, $reply_parameters, $reply_markup);
     }
 
     /**
@@ -352,40 +380,18 @@ class Client extends Telegram
      *
      * @param string|array $pattern  Это строка или массив строк, по которым будет искать какой callback выполнить, например hello{id} или greet{name}.
      * @param Closure $callback Функция-обработчик для выполнения, если команда совпадает с паттерном.
-     * @param bool $deleteInlineButtons Удалять ли кнопки прошлого сообщения
      * 
      * @return mixed Результат выполнения функции-обработчика.
      */
-    public function callback($pattern, $callback, $deleteInlineButtons = false)
+    public function callback($pattern, $callback)
     {
         $cb = $this->getCallbackData();
 
         // Добавляем проверку на существование и тип переменной $cb
         if ($cb && is_object($cb)) {
-            // Приводим паттерн к массиву, если это строка
-            $patterns = is_array($pattern) ? $pattern : [$pattern];
-
-            // Пробегаемся по каждому паттерну
-            foreach ($patterns as $singlePattern) {
-                // Преобразуем паттерн с параметрами в регулярное выражение
-                $singlePattern = str_replace(['{', '}'], ['(?P<', '>[^}]+)'], $singlePattern);
-                $singlePattern = "/^" . str_replace('/', '\/', $singlePattern) . "$/";
-
-                if (preg_match($singlePattern, $cb->callback_data, $matches)) {
-                    // Извлекаем только значения параметров из совпавших данных и передаем их в функцию-обработчик
-                    $parameters = array_filter($matches, 'is_string', ARRAY_FILTER_USE_KEY);
-
-                    // Вызываем answerCallbackQuery только если паттерн совпадает
-                    $this->answerCallbackQuery($cb->callback_query_id);
-
-                    if ($deleteInlineButtons) {
-                        $this->editMessage($this->getUserId(), $this->getMessageId(), $this->getMessageText());
-                    }
-
-                    $callback(...$parameters);
-                    exit; // Завершаем выполнение скрипта после выполнения callback
-                }
-            }
+            return $this->pattern($pattern, $cb->callback_data, $callback, function () use ($cb) {
+                $this->answerCallbackQuery($cb->callback_query_id);
+            });
         }
 
         return null;
@@ -401,8 +407,21 @@ class Client extends Telegram
      */
     public function message($pattern, $callback)
     {
-        $messageText = $this->getMessageText();
+        return $this->pattern($pattern, $this->getMessageText(), $callback);
+    }
 
+    /**
+     * Обрабатывает паттерн и выполняет соответствующий callback, если паттерн совпадает с текстом.
+     *
+     * @param string|array $pattern Это строка или массив строк/регулярных выражений, по которым будет искать совпадение с текстом.
+     * @param string $text Текст для проверки на совпадение с паттерном.
+     * @param Closure $callback Функция-обработчик для выполнения, если текст совпадает с паттерном.
+     * @param Closure|null $preCallback Функция, которая будет выполнена перед основным callback, если паттерн совпадает.
+     *
+     * @return mixed Результат выполнения функции-обработчика.
+     */
+    private function pattern($pattern, $text, $callback, $preCallback = null)
+    {
         // Приводим паттерн к массиву, если это строка
         $patterns = is_array($pattern) ? $pattern : [$pattern];
 
@@ -417,9 +436,14 @@ class Client extends Telegram
                 $singlePattern = "/^" . str_replace('/', '\/', $singlePattern) . "$/";
             }
 
-            if (preg_match($singlePattern, $messageText, $matches)) {
+            if (preg_match($singlePattern, $text, $matches)) {
                 // Извлекаем только значения параметров из совпавших данных и передаем их в функцию-обработчик
                 $parameters = array_filter($matches, 'is_string', ARRAY_FILTER_USE_KEY);
+
+                // Выполняем preCallback, если он задан
+                if ($preCallback) {
+                    $preCallback();
+                }
 
                 // Вызываем функцию-обработчик с параметрами
                 $callback(...$parameters);
@@ -577,6 +601,21 @@ class Client extends Telegram
      */
     public function blankRequest()
     {
-        $this->request() instanceof \stdClass ? false : true;
+        return ($this->request() instanceof \stdClass);
+    }
+
+    private function simpleKeyboard(array $options)
+    {
+        $result = [];
+        foreach ($options as $option) {
+            if (strpos($option[0], 'app:') === 0) {
+                $result[] = ['web_app' => substr($option[0], 4), 'text' => $option[1]];
+            } elseif (strpos($option[0], 'url:') === 0) {
+                $result[] = ['url' => substr($option[0], 4), 'text' => $option[1]];
+            } else {
+                $result[] = ['callback_data' => $option[0], 'text' => $option[1]];
+            }
+        }
+        return $result;
     }
 }
