@@ -487,8 +487,10 @@ class Client extends Telegram
      */
     public function anyMessage($callback)
     {
-        if (mb_substr($this->getMessageText(), 0, 1) !== "/") {
-            return $callback();
+        $text = $this->getMessageText();
+        $callbackData = $this->getCallbackData();
+        if (mb_substr($text, 0, 1) !== "/" && !$callbackData) {
+            return $callback($text);
         }
     }
 

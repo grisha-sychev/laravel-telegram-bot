@@ -417,6 +417,7 @@ class Telegram
         if ($user && method_exists($user, 'getCallbackQueryId') && method_exists($user, 'getCallbackData')) {
             return (object) [
                 'callback_query_id' => $user->getCallbackQueryId(),
+                'callback_text' => $this->request()->getInlineKeyboard()[0][0]['text'],
                 'callback_data' => $user->getCallbackData(),
             ];
         }

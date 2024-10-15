@@ -43,7 +43,7 @@ class MessagesSQL implements Messages
         $cb = $this->bot->getCallbackData();
 
         // Проверяем, что это не callback или сообщение не пусто
-        if($cb || empty($messageText)) {
+        if ($cb || empty($messageText)) {
             return null;
         }
 
@@ -76,10 +76,15 @@ class MessagesSQL implements Messages
     /**
      * Получает сообщение для текущего пользователя бота.
      *
-     * @return Message|null Возвращает первое сообщение, соответствующее идентификатору пользователя Telegram, или null, если сообщение не найдено.
+     * @param mixed|null $input Входное значение для проверки существования сообщения.
+     * @return Message|null|bool Возвращает первое сообщение, соответствующее идентификатору пользователя Telegram, или null, если сообщение не найдено. Если $input не null, возвращает булево значение существования сообщения.
      */
-    public function getMessage()
+    public function getMessage($input = null)
     {
+        if ($input !== null) {
+            return Message::where('tg_id', $this->bot->getUserId())->where('clue', $input)->exists();
+        }
+        
         return Message::where('tg_id', $this->bot->getUserId())->first();
     }
 
