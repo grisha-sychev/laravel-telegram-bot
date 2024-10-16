@@ -5,6 +5,12 @@ namespace App\Console;
 use Tgb\Api\Telegram;
 use Illuminate\Support\Facades\Artisan;
 
+Artisan::command("tgb:install", function () {
+  $this->info('Publishing Tgb App...');
+  Artisan::call('vendor:publish', ['--tag' => 'tgb-assets']);
+  $this->info('Tgb scaffolding installed successfully.');
+});
+
 Artisan::command("tgb:new {name} {token} {hostname=null}", function () {
   $name = $this->argument('name');
   $token = $this->argument('token');
