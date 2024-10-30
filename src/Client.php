@@ -35,7 +35,11 @@ class Client extends Telegram
      */
     public function sendOut($id, $message, $keyboard = null, $layout = 2, $type_keyboard = 0, $parse_mode = "HTML")
     {
-        $keyboard = $keyboard !== null ? $this->simpleKeyboard($keyboard) : $keyboard;
+        
+        if ($type_keyboard !== 0) {
+            $keyboard = $keyboard !== null ? $this->simpleKeyboard($keyboard) : $keyboard;
+        }
+
         is_array($message) ? $message = $this->html($message) : $message;
         $keyboard ? $keygrid = $this->grid($keyboard, $layout) : $keyboard;
         $type_keyboard === 1 ? $type = "inlineKeyboard" : $type = "keyboard";

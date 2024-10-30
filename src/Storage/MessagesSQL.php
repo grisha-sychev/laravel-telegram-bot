@@ -35,7 +35,7 @@ class MessagesSQL implements Messages
      * 
      * @return mixed Результат выполнения функции-обработчика.
      */
-    public function message($pattern, $callback): mixed
+    public function clue($pattern, $callback): mixed
     {
         $messageText = $this->bot->getMessageText();
 
@@ -50,27 +50,116 @@ class MessagesSQL implements Messages
         $patterns = is_array($pattern) ? $pattern : [$pattern];
         $message = Message::where('tg_id', $this->bot->getUserId())->first();
 
-        foreach ($patterns as $singlePattern) {
-            // Проверяем, является ли паттерн регулярным выражением
-            $isRegex = preg_match('/^\/.*\/[a-z]*$/i', $singlePattern);
+        if ($message && $message->clue) {
+            foreach ($patterns as $singlePattern) {
+                // Проверяем, является ли паттерн регулярным выражением
+                $isRegex = preg_match('/^\/.*\/[a-z]*$/i', $singlePattern);
 
-            // Если это не регулярное выражение, преобразуем паттерн с параметрами в регулярное выражение
-            if (!$isRegex) {
-                $singlePattern = str_replace(['{', '}'], ['(?P<', '>[^}]+)'], $singlePattern);
-                $singlePattern = "/^" . str_replace('/', '\/', $singlePattern) . "$/";
-            }
+                // Если это не регулярное выражение, преобразуем паттерн с параметрами в регулярное выражение
+                if (!$isRegex) {
+                    $singlePattern = str_replace(['{', '}'], ['(?P<', '>[^}]+)'], $singlePattern);
+                    $singlePattern = "/^" . str_replace('/', '\/', $singlePattern) . "$/";
+                }
 
-            if (preg_match($singlePattern, $message->clue, $matches)) {
-                // Извлекаем только значения параметров из совпавших данных и передаем их в функцию-обработчик
-                $parameters = array_filter($matches, 'is_string', ARRAY_FILTER_USE_KEY);
+                if (preg_match($singlePattern, $message->clue, $matches)) {
+                    // Извлекаем только значения параметров из совпавших данных и передаем их в функцию-обработчик
+                    $parameters = array_filter($matches, 'is_string', ARRAY_FILTER_USE_KEY);
 
-                // Вызываем функцию-обработчик с параметрами
-                $callback(...$parameters);
-                exit; // Завершаем выполнение скрипта после выполнения callback
+                    // Вызываем функцию-обработчик с параметрами
+                    $callback(...$parameters);
+                    exit; // Завершаем выполнение скрипта после выполнения callback
+                }
             }
         }
-
         return null;
+    }
+
+    /**
+     * Метод для получения значения последнего сообщения и выполнения callback
+     *
+     * @param string|array $pattern Шаблон сообщения или массив шаблонов
+     * @param Closure $callback Функция обратного вызова
+     * 
+     * @return mixed Результат выполнения функции-обработчика.
+     */
+    public function payload($pattern, $callback): mixed
+    {
+        $messageText = $this->bot->getMessageText();
+
+
+        $cb = $this->bot->getCallbackData();
+
+        // Проверяем, что это не callback или сообщение не пусто
+        if ($cb || empty($messageText)) {
+            return null;
+        }
+
+        $patterns = is_array($pattern) ? $pattern : [$pattern];
+        $message = Message::where('tg_id', $this->bot->getUserId())->first();
+
+        if ($message && $message->payload) {
+            foreach ($patterns as $singlePattern) {
+                // Проверяем, является ли паттерн регулярным выражением
+                $isRegex = preg_match('/^\/.*\/[a-z]*$/i', $singlePattern);
+
+                // Если это не регулярное выражение, преобразуем паттерн с параметрами в регулярное выражение
+                if (!$isRegex) {
+                    $singlePattern = str_replace(['{', '}'], ['(?P<', '>[^}]+)'], $singlePattern);
+                    $singlePattern = "/^" . str_replace('/', '\/', $singlePattern) . "$/";
+                }
+
+
+                if (preg_match($singlePattern, $message->payload, $matches)) {
+                    // Извлекаем только значения параметров из совпавших данных и передаем их в функцию-обработчик
+                    $parameters = array_filter($matches, 'is_string', ARRAY_FILTER_USE_KEY);
+
+                    // Вызываем функцию-обработчик с параметрами
+                    $callback(...$parameters);
+                    exit; // Завершаем выполнение скрипта после выполнения callback
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Метод для очистки значений payload и clue последнего сообщения
+     *
+     * @return void
+     */
+    public function delete(): void
+    {
+        $message = Message::where('tg_id', $this->bot->getUserId())->first();
+
+        if ($message) {
+            $message->payload = '';
+            $message->clue = '';
+            $message->save();
+        }
+    }
+
+    /**
+     * Метод для очистки значений payload и clue последнего сообщения
+     *
+     * @return void
+     */
+    public function deletePayload(): void
+    {
+        $message = Message::where('tg_id', $this->bot->getUserId())->first();
+        $message->payload = '';
+        $message->save();
+    }
+
+    /**
+     * Метод для очистки значений payload и clue последнего сообщения
+     *
+     * @return void
+     */
+    public function deleteClue(): void
+    {
+        $message = Message::where('tg_id', $this->bot->getUserId())->first();
+        $message->clue = '';
+        $message->save();
     }
 
     /**
@@ -84,7 +173,7 @@ class MessagesSQL implements Messages
         if ($input !== null) {
             return Message::where('tg_id', $this->bot->getUserId())->where('clue', $input)->exists();
         }
-        
+
         return Message::where('tg_id', $this->bot->getUserId())->first();
     }
 

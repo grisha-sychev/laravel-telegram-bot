@@ -6,14 +6,31 @@ interface Messages
 {
 
     /**
-     * Метод для получения значения последнего сообщения и выполнения callback
+     * Метод для получения значения последнего сообщения payload и выполнения callback
      *
      * @param string|array $pattern Шаблон сообщения или массив шаблонов
      * @param Closure $callback Функция обратного вызова
      * 
      * @return mixed Результат выполнения функции-обработчика.
      */
-    public function message($pattern, $callback): mixed;
+    public function payload($pattern, $callback): mixed;
+
+    /**
+     * Метод для получения значения последнего сообщения clue и выполнения callback
+     *
+     * @param string|array $pattern Шаблон сообщения или массив шаблонов
+     * @param Closure $callback Функция обратного вызова
+     * 
+     * @return mixed Результат выполнения функции-обработчика.
+     */
+    public function clue($pattern, $callback): mixed;
+
+    /**
+     * Метод для удаления всех значений
+     */
+    public function delete(): void;
+    public function deletePayload(): void;
+    public function deleteClue(): void;
 
     /**
      * Получает сообщение для текущего пользователя бота.
