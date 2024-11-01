@@ -26,7 +26,7 @@ composer require tgb/tgb
 ```
 
 ```bash
-php artisan tgb:install
+php artisan vendor:publish --tag=tgb-assets
 ```
 
 ```bash
